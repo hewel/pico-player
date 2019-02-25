@@ -1,0 +1,34 @@
+{
+  "name": "pico-player",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel ./src/index.html -p 5400 --open",
+    "build": "parcel build index.js"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-preact": "^1.1.0",
+    "eslint": "^5.14.1",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-react": "^7.12.4",
+    "node-sass": "^4.11.0",
+    "parcel-bundler": "^1.11.0",
+    "postcss-modules": "^1.4.1"
+  },
+  "dependencies": {
+    "preact": "^8.4.2",
+    "preact-compat": "^3.18.4",
+    "preact-material-components": "^1.5.7",
+    "sass": "^1.17.2"
+  },
+  "alias": {
+    "assets": "./src/assets/",
+    "Components": "./src/Components/",
+    "sass": "./src/sass/"
+  }
+}
