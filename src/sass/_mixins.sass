@@ -5,3 +5,12 @@
     top: calc(50% - (#{$height} / 2))
   @else
     left: calc(50% - (#{$width} / 2))
+
+=sizeInherit($option: 0)
+  @if $option == 0
+    width: inherit
+    height: inherit
+  @else if $option == 1
+    width: inherit
+  @else
+    height: inherit
