@@ -6,7 +6,7 @@
   @else
     left: calc(50% - (#{$width} / 2))
 
-=sizeInherit($option: 0)
+=inheritSize($option: 0)
   @if $option == 0
     width: inherit
     height: inherit
@@ -14,3 +14,15 @@
     width: inherit
   @else
     height: inherit
+
+=truncateText
+  overflow: hidden
+  white-space: nowrap
+  text-overflow: ellipsis
+
+=setFontScale($level: 1)
+  $font-size-lists: [14, 16, 20, 24, 30, 38]
+  $font-size: nth($font-size-lists, $level)
+  $line-height: $font-size + 8
+  font-size: $font-size + px
+  line-height: $line-height + px

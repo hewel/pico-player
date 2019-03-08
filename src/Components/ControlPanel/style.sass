@@ -4,4 +4,45 @@
   bottom: $panel-bottom
   width: $panel-width
   height: $panel-height
+  padding: 0 !important
+  margin-bottom: $panel-bottom-margin
   box-shadow: $panel-shadow
+.inner
+  +inheritSize(2)
+  column-gap: $panel-inner-grid-gutter !important
+  row-gap: 0 !important
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+.albumCell
+  grid-column-end: span 2 !important
+  +inheritSize(2)
+.songInfo
+  display: flex
+  grid-row: 2 / 4
+  grid-column: 3 / 6 !important
+  flex-direction: column
+  justify-content: space-around
+  span
+    +truncateText()
+.songName
+  +setFontScale(2)
+.songSinger
+  +setFontScale(1)
+.controlButtonGroup
+  grid-row: 2 / 4
+  grid-column: 6 / 9 !important
+  display: flex;
+  justify-content: space-around
+  align-items: center
+  +setFontScale(5)
+  button
+    font-size: inherit
+    padding: 0
+    min-width: $control-button-size
+    height: $control-button-size
+    border-radius: $control-button-size
+.tunings
+  display: flex
+  justify-content: space-around
+  align-items: center
+  grid-row: 2 / 4
+  grid-column: 9 / 13

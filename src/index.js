@@ -1,5 +1,6 @@
-import { h, render } from 'preact'
+import React from 'react'
+import ReactDOM from 'react-dom'
 import App from './App'
 import 'sass/init'
 
-render(<App />, document.body)
+ReactDOM.render(<App />, document.getElementById('root'))
