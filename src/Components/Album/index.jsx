@@ -10,11 +10,12 @@ export default class Album extends Component {
     render() {
         const { className, imageUrl, songName, ...otherProps } = this.props
         const { defAlbumImage, defSongName } = this.state
-        const [ albumImageUrl, albumAlt, albumClassName ] = [
+        const [albumImageUrl, albumAlt, albumClassName] = [
             imageUrl || defAlbumImage,
             songName || defSongName,
-            className ? `${album} ${className}` : album
+            className ? `${album} ${className}` : album,
         ]
+
         return(
             <div className={albumClassName} {...otherProps}>
                 <img

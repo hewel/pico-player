@@ -17,14 +17,14 @@
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-react": "^7.12.4",
     "node-sass": "^4.11.0",
-    "parcel-bundler": "^1.11.0",
+    "parcel-bundler": "^1.12.0",
     "postcss-modules": "^1.4.1"
   },
   "dependencies": {
     "@material-ui/core": "^3.9.2",
+    "@material-ui/icons": "^3.0.2",
+    "@material-ui/lab": "^3.0.0-alpha.30",
     "@types/react": "^16.8.7",
-    "preact": "*",
-    "preact-material-components": "^1.5.7",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "sass": "^1.17.2"
