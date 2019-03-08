@@ -1,2 +1,2 @@
 # pico-player
-A web music player by preact
+A web music player by react
