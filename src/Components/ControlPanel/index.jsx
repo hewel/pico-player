@@ -27,11 +27,22 @@ export default class ControlPanel extends Component {
         songName: 'Lost In The Echo',
         songSinger: 'Linkin Park',
         isPlaying: false,
-        volume: 100,
+        playMode: 0,
+        volume: 60,
         isMuted: false
     }
     changePlayState = () => {
         this.setState(({ isPlaying }) => ({ isPlaying: !isPlaying }))
+    }
+    changePlayMode = () => {
+        this.setState(({ playMode }) => {
+            if (playMode == 2) {
+                playMode = 0
+            } else {
+                playMode ++
+            }
+            return { playMode }
+        })
     }
     changeVolume = (e, value) => {
         this.setState({
@@ -50,14 +61,16 @@ export default class ControlPanel extends Component {
             songName,
             songSinger,
             isPlaying,
+            playMode,
             volume,
             isMuted
         } = this.state
         const { ...props } = this.props
 
-        const [playButtonSymbol, volumeSymbol ] = [
+        const [ playButtonSymbol, volumeSymbol, playModeSymbol ] = [
             isPlaying ? 'playarrow' : 'pause',
-            isMuted ? 'volumeoff' : judgingVolume(volume),
+            isMuted ? 'volumeoff' : getVolumeSymbol(volume),
+            getPlayModeSymbol(playMode)
         ]
 
         return (
@@ -87,16 +100,24 @@ export default class ControlPanel extends Component {
                             <Button color="primary"><Icon symbol="skipnext" /></Button>
                         </Grid>
                         <Grid item xs={4} className={styles.tuning}>
+                            <Icon
+                                className={styles.tuningIcon}
+                                symbol={playModeSymbol}
+                                onClick={this.changePlayMode}
+                            />
                             <div className={styles.volumeControl}>
-                                <Icon className={`${styles.tuningIcon} ${styles.volumeIcon}`} symbol={volumeSymbol} onClick={this.muteVolume} />
+                                <Icon
+                                    className={`${styles.tuningIcon} ${styles.volumeIcon}`}
+                                    symbol={volumeSymbol}
+                                    onClick={this.muteVolume}
+                                />
                                 <Slider
                                     value={volume}
                                     disabled={isMuted}
                                     onChange={this.changeVolume}
                                 ></Slider>
                             </div>
-                            <Icon className={styles.tuningIcon} symbol="repeat" />
-                            <Icon className={styles.tuningIcon} symbol="playlistplay" />
+                            <Icon className={styles.tuningIcon} symbol="queuemusic" />
                         </Grid>
                     </Grid>
                 </Paper>
@@ -105,7 +126,7 @@ export default class ControlPanel extends Component {
     }
 }
 
-function judgingVolume(value = 0) {
+function getVolumeSymbol(value = 0) {
     if (!value) {
         return 'volumemute'
     } else if (value < 50) {
@@ -113,4 +134,8 @@ function judgingVolume(value = 0) {
     } else {
         return 'volumeup'
     }
+}
+function getPlayModeSymbol(value = 0) {
+    const modeSymbolArr = ['repeat', 'repeatone', 'shuffle']
+    return modeSymbolArr[value]
 }
