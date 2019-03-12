@@ -9,6 +9,14 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 
 import Album from 'Components/Album'
 import Icon from 'Components/Icon'
+import Audio from 'Components/Audio'
+
+import fetch from 'utils/fetch'
+import {
+    formatAudioTime,
+    formatUnits
+} from 'utils/format'
+import musicApi from 'config/musicApi'
 
 import styles from './style.sass'
 
@@ -24,13 +32,29 @@ const theme = createMuiTheme({
 export default class ControlPanel extends Component {
     state = {
         albumImageUrl: `https://p1.music.126.net/7tbeDDuTR_U_4F_u1qGKWQ==/2539871861205743.jpg`,
+        songUrl: ``,
         songName: 'Lost In The Echo',
         songSinger: 'Linkin Park',
         isPlaying: false,
         playMode: 0,
         volume: 60,
-        isMuted: false
+        isMuted: false,
+        audioDuration: 0,
+        audioCurrentTime: 0
     }
+
+    componentWillMount = () => {
+        fetchSongUrl(fetch, musicApi, {
+            id: 4151839
+        })
+            .then(res => {
+                this.setState({
+                    songUrl: res
+                })
+            })
+
+    }
+
     changePlayState = () => {
         this.setState(({ isPlaying }) => ({ isPlaying: !isPlaying }))
     }
@@ -52,25 +76,37 @@ export default class ControlPanel extends Component {
     muteVolume = () => {
         this.setState(({ isMuted }) => ({ isMuted: !isMuted }))
     }
-    clickDemo = e => {
-        console.log(1)
+    handleAudioPlay = (audioDuration, audioCurrentTime) => {
+        this.setState({
+            audioDuration,
+            audioCurrentTime
+        })
     }
     render() {
         const {
             albumImageUrl,
+            songUrl,
             songName,
             songSinger,
             isPlaying,
             playMode,
             volume,
-            isMuted
+            isMuted,
+            audioDuration,
+            audioCurrentTime
         } = this.state
         const { ...props } = this.props
 
-        const [ playButtonSymbol, volumeSymbol, playModeSymbol ] = [
-            isPlaying ? 'playarrow' : 'pause',
+        const [playButtonSymbol, volumeSymbol, playModeSymbol, playCommand] = [
+            isPlaying ? 'pause' : 'playarrow',
             isMuted ? 'volumeoff' : getVolumeSymbol(volume),
-            getPlayModeSymbol(playMode)
+            getPlayModeSymbol(playMode),
+            isPlaying ? 'pause' : 'play'
+        ]
+
+        const [duration, currentTime] = [
+            formatAudioTime(audioDuration, formatUnits),
+            formatAudioTime(audioCurrentTime, formatUnits)
         ]
 
         return (
@@ -121,6 +157,14 @@ export default class ControlPanel extends Component {
                         </Grid>
                     </Grid>
                 </Paper>
+                <span>{currentTime}/{duration}</span>
+                <Audio
+                    songUrl={songUrl}
+                    playCommand={playCommand}
+                    volume={volume}
+                    isMuted={isMuted}
+                    onAudioPlay={this.handleAudioPlay}
+                />
             </MuiThemeProvider>
         )
     }
@@ -138,4 +182,13 @@ function getVolumeSymbol(value = 0) {
 function getPlayModeSymbol(value = 0) {
     const modeSymbolArr = ['repeat', 'repeatone', 'shuffle']
     return modeSymbolArr[value]
+}
+
+function fetchSongUrl(fetch, musicApi, params) {
+    const songApi = `${musicApi}/song/url`
+    return fetch(songApi, params)
+        .then(response => response.data[0].url)
+        .catch(err => {
+            console.log(err)
+        })
 }
