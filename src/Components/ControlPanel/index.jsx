@@ -7,6 +7,8 @@ import Slider from '@material-ui/lab/Slider'
 import blue from '@material-ui/core/colors/blue'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 
+import clsx from 'clsx'
+
 import Album from '../Album'
 import Icon from '../Icon'
 import Audio from '../Audio'
@@ -91,7 +93,7 @@ export default class ControlPanel extends Component {
             audioCurrentTime,
             audioDuration,
         } = this.state
-        const { ...props } = this.props
+        const { className, ...props } = this.props
 
         const [playButtonSymbol, volumeSymbol, playModeSymbol, playCommand] = [
             isPlaying ? 'pause' : 'playarrow',
@@ -100,14 +102,14 @@ export default class ControlPanel extends Component {
             isPlaying ? 'pause' : 'play'
         ]
 
-        // const [currentTime, duration] = [
-        //     formatAudioTime(audioCurrentTime),
-        //     formatAudioTime(audioDuration)
-        // ]
+        const [currentTime, duration] = [
+            formatAudioTime(audioCurrentTime),
+            formatAudioTime(audioDuration)
+        ]
 
         return (
             <MuiThemeProvider theme={theme}>
-                <Paper className={styles.controlPanel} square {...props}>
+                <Paper className={clsx(styles.controlPanel, className)} square {...props}>
                     <Progress
                         className={styles.progress}
                         currentTime={audioCurrentTime}
@@ -137,6 +139,10 @@ export default class ControlPanel extends Component {
                             <Button color="primary"><Icon symbol="skipnext" /></Button>
                         </Grid>
                         <Grid item xs={4} className={styles.tuning}>
+                            <div className={styles.time}>
+                                <span>{currentTime}</span>
+                                <span>{duration}</span>
+                            </div>
                             <Icon
                                 className={styles.tuningIcon}
                                 symbol={playModeSymbol}

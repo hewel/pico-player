@@ -6,7 +6,7 @@
   "scripts": {
     "start": "parcel ./src/index.html -p 5400 --open",
     "build": "parcel build index.js",
-    "commit": "npx git-cz"
+    "commit": "git add . && npx git-cz"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

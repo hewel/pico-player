@@ -40,11 +40,14 @@ export default class Progress extends Component {
                     value={value}
                     onClick={this.handleProgressClick}
                 />
-                <Chip
+                {/* <Chip
                     className={styles.thumb}
                     color="primary"
                     label={`${formatAudioTime(currentTime)}/${formatAudioTime(duration)}`}
-                />
+                    style={{
+                        left: `${value}%`
+                    }}
+                /> */}
             </div>
         )
     }
