@@ -7,16 +7,13 @@ import Slider from '@material-ui/lab/Slider'
 import blue from '@material-ui/core/colors/blue'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 
-import Album from 'Components/Album'
-import Icon from 'Components/Icon'
-import Audio from 'Components/Audio'
+import Album from '../Album'
+import Icon from '../Icon'
+import Audio from '../Audio'
+import Progress from '../Progress'
 
 import fetch from 'utils/fetch'
-import {
-    formatAudioTime,
-    formatUnits
-} from 'utils/format'
-import musicApi from 'config/musicApi'
+import formatAudioTime from 'utils/format'
 
 import styles from './style.sass'
 
@@ -37,14 +34,14 @@ export default class ControlPanel extends Component {
         songSinger: 'Linkin Park',
         isPlaying: false,
         playMode: 0,
-        volume: 60,
+        volume: 30,
         isMuted: false,
+        audioCurrentTime: 0,
         audioDuration: 0,
-        audioCurrentTime: 0
     }
 
     componentWillMount = () => {
-        fetchSongUrl(fetch, musicApi, {
+        fetchSongUrl({
             id: 4151839
         })
             .then(res => {
@@ -52,7 +49,6 @@ export default class ControlPanel extends Component {
                     songUrl: res
                 })
             })
-
     }
 
     changePlayState = () => {
@@ -79,7 +75,7 @@ export default class ControlPanel extends Component {
     handleAudioPlay = (audioDuration, audioCurrentTime) => {
         this.setState({
             audioDuration,
-            audioCurrentTime
+            audioCurrentTime,
         })
     }
     render() {
@@ -92,8 +88,8 @@ export default class ControlPanel extends Component {
             playMode,
             volume,
             isMuted,
+            audioCurrentTime,
             audioDuration,
-            audioCurrentTime
         } = this.state
         const { ...props } = this.props
 
@@ -104,14 +100,19 @@ export default class ControlPanel extends Component {
             isPlaying ? 'pause' : 'play'
         ]
 
-        const [duration, currentTime] = [
-            formatAudioTime(audioDuration, formatUnits),
-            formatAudioTime(audioCurrentTime, formatUnits)
-        ]
+        // const [currentTime, duration] = [
+        //     formatAudioTime(audioCurrentTime),
+        //     formatAudioTime(audioDuration)
+        // ]
 
         return (
             <MuiThemeProvider theme={theme}>
-                <Paper className={styles.controlPanel} {...props}>
+                <Paper className={styles.controlPanel} square {...props}>
+                    <Progress
+                        className={styles.progress}
+                        currentTime={audioCurrentTime}
+                        duration={audioDuration}
+                    />
                     <Grid container spacing={32} className={styles.inner}>
                         <Grid item xs={2}>
                             <Album
@@ -157,7 +158,6 @@ export default class ControlPanel extends Component {
                         </Grid>
                     </Grid>
                 </Paper>
-                <span>{currentTime}/{duration}</span>
                 <Audio
                     songUrl={songUrl}
                     playCommand={playCommand}
@@ -184,11 +184,7 @@ function getPlayModeSymbol(value = 0) {
     return modeSymbolArr[value]
 }
 
-function fetchSongUrl(fetch, musicApi, params) {
-    const songApi = `${musicApi}/song/url`
-    return fetch(songApi, params)
+function fetchSongUrl(params) {
+    return fetch('/song/url', params)
         .then(response => response.data[0].url)
-        .catch(err => {
-            console.log(err)
-        })
 }

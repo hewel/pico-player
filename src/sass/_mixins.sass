@@ -1,3 +1,5 @@
+@import './variables'
+
 =centerByAbsolute($width, $height: 0)
   position: absolute
   @if $height != 0
@@ -27,3 +29,5 @@
   font-size: $font-size + px
   @if $mode == 0
     line-height: $line-height + px
+=containerWidth
+  width: $container-width

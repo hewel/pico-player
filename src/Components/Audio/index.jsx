@@ -15,13 +15,13 @@ export default class Audio extends Component {
     componentDidUpdate = prevProps => {
         const { playCommand, volume, isMuted, onAudioPlay } = prevProps
         const audioNode = this.audioRef.current
-        const audioDuration = parseInt(audioNode.duration)
+        const audioDuration = audioNode.duration
 
         if (playCommand !== this.props.playCommand) {
             if (playCommand == 'play') {
                 audioNode.play()
                 this.audioTimer = setInterval(() => {
-                    const audioCurrentTime = parseInt(audioNode.currentTime)
+                    const audioCurrentTime = audioNode.currentTime
                     onAudioPlay(audioDuration, audioCurrentTime)
                 }, 100)
 

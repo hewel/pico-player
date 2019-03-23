@@ -5,31 +5,37 @@
   "license": "MIT",
   "scripts": {
     "start": "parcel ./src/index.html -p 5400 --open",
-    "build": "parcel build index.js"
+    "build": "parcel build index.js",
+    "commit": "npx git-cz"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "@types/ramda": "^0.26.3",
+    "@types/react": "^16.8.8",
     "babel-eslint": "^10.0.1",
+    "babel-plugin-ramda": "^2.0.0",
+    "cz-conventional-changelog": "2.1.0",
     "eslint": "^5.14.1",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-react": "^7.12.4",
     "node-sass": "^4.11.0",
     "parcel-bundler": "^1.12.0",
-    "postcss-modules": "^1.4.1"
+    "postcss-modules": "^1.4.1",
+    "sass": "^1.17.2"
   },
   "dependencies": {
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
     "@material-ui/lab": "^3.0.0-alpha.30",
-    "@types/react": "^16.8.7",
     "async": "^2.6.2",
     "axios": "^0.18.0",
+    "clsx": "^1.0.3",
+    "ramda": "^0.26.1",
     "react": "^16.8.4",
-    "react-dom": "^16.8.4",
-    "sass": "^1.17.2"
+    "react-dom": "^16.8.4"
   },
   "alias": {
     "assets": "./src/assets/",
@@ -37,5 +43,10 @@
     "sass": "./src/sass/",
     "utils": "./src/utils/",
     "config": "./src/config/"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

@@ -1,12 +1,12 @@
 @import './utilities'
 .controlPanel
   +centerByAbsolute($panel-width)
-  bottom: $panel-bottom
   width: $panel-width
-  height: $panel-height
+  bottom: $panel-bottom
+  // height: $panel-height
   padding: 0 !important
   margin-bottom: $panel-bottom-margin
-  overflow: hidden
+  // overflow: hidden
 .inner
   align-items: center
 .albumCell
@@ -15,6 +15,7 @@
   display: flex
   flex-direction: column
   justify-content: space-around
+  height: $panel-height
   span
     +truncateText()
 .songName
@@ -22,16 +23,16 @@
 .songSinger
   +setFontScale(1)
 .controlButtonGroup
-  display: flex;
+  display: flex
   justify-content: space-around
   align-items: center
   +setFontScale(5)
   button
     font-size: inherit
     padding: 0
-    min-width: $control-button-size
-    height: $control-button-size
-    border-radius: $control-button-size
+    min-width: $button-size
+    height: $button-size
+    border-radius: $button-size
     span
       height: inherit
 .tuning
@@ -49,3 +50,5 @@
   width: 50%
 .volumeIcon
   margin-right: 6px
+.progress
+  position: relative

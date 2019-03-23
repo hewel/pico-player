@@ -1,9 +1,10 @@
 import axios from 'axios'
+import musicApi from 'config/musicApi'
 
 const fetch = (url, params) => {
     return axios({
         method: 'get',
-        url,
+        url: musicApi + url,
         params,
         xhrFields: {
             withCredentials: true

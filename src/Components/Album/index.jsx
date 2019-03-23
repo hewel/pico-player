@@ -3,16 +3,12 @@ import { album, albumImg } from './style.sass'
 import defAlbumImage from 'assets/music-cover.png'
 
 export default class Album extends Component {
-    state = {
-        defAlbumImage,
-        defSongName: '没有歌曲'
-    }
+
     render() {
         const { className, imageUrl, songName, ...otherProps } = this.props
-        const { defAlbumImage, defSongName } = this.state
         const [albumImageUrl, albumAlt, albumClassName] = [
             imageUrl || defAlbumImage,
-            songName || defSongName,
+            songName || '没有歌曲',
             className ? `${album} ${className}` : album,
         ]
 
