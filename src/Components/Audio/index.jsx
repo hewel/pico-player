@@ -11,6 +11,12 @@ export default class Audio extends Component {
     //     }
     //     return false
     // }
+    componentDidMount = () => {
+        const { getChangFunc } = this.props
+        if (getChangFunc) {
+            getChangFunc(this.changeCurrentTime)
+        }
+    }
 
     componentDidUpdate = prevProps => {
         const { playCommand, volume, isMuted, onAudioPlay } = prevProps
@@ -40,6 +46,10 @@ export default class Audio extends Component {
     }
     componentWillUnmount = () => {
         clearInterval(this.audioTimer)
+    }
+    changeCurrentTime = value => {
+        const audioNode = this.audioRef.current
+        audioNode.currentTime = value
     }
 
     render() {

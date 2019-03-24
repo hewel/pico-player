@@ -80,6 +80,12 @@ export default class ControlPanel extends Component {
             audioCurrentTime,
         })
     }
+    handelGetChangeFunc = func => {
+        this.changeCurrentTime = func
+    }
+    handleProgressChange = value => {
+        this.changeCurrentTime(value)
+    }
     render() {
         const {
             albumImageUrl,
@@ -114,6 +120,7 @@ export default class ControlPanel extends Component {
                         className={styles.progress}
                         currentTime={audioCurrentTime}
                         duration={audioDuration}
+                        onChange={this.handleProgressChange}
                     />
                     <Grid container spacing={32} className={styles.inner}>
                         <Grid item xs={2}>
@@ -139,10 +146,10 @@ export default class ControlPanel extends Component {
                             <Button color="primary"><Icon symbol="skipnext" /></Button>
                         </Grid>
                         <Grid item xs={4} className={styles.tuning}>
-                            <div className={styles.time}>
+                            {/* <div className={styles.time}>
                                 <span>{currentTime}</span>
                                 <span>{duration}</span>
-                            </div>
+                            </div> */}
                             <Icon
                                 className={styles.tuningIcon}
                                 symbol={playModeSymbol}
@@ -170,6 +177,7 @@ export default class ControlPanel extends Component {
                     volume={volume}
                     isMuted={isMuted}
                     onAudioPlay={this.handleAudioPlay}
+                    getChangFunc={this.handelGetChangeFunc}
                 />
             </MuiThemeProvider>
         )

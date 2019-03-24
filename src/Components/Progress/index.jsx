@@ -17,17 +17,25 @@ export default class Progress extends Component {
         const { currentTime, duration } = this.props
         if (prevProps.currentTime !== currentTime) {
             this.setState({
-                value: calculateValue(currentTime, duration)
+                value: parseInt(clamp(currentTime / duration * 100)) || 0
             })
         }
     }
 
-
     handleProgressClick = (event) => {
         const node = event.currentTarget
         const value = calculatePercent(node, event)
-        this.setState({ value })
+        this.setState({ value }, () => {
+            this.handleChange(value)
+        })
     }
+    handleChange = value => {
+        const { duration, onChange } = this.props
+        if (onChange) {
+            onChange(calculateCurrentTime(value, duration))
+        }
+    }
+
     render() {
         const { currentTime, duration, className } = this.props
         const { value } = this.state
@@ -40,14 +48,14 @@ export default class Progress extends Component {
                     value={value}
                     onClick={this.handleProgressClick}
                 />
-                {/* <Chip
+                <Chip
                     className={styles.thumb}
                     color="primary"
                     label={`${formatAudioTime(currentTime)}/${formatAudioTime(duration)}`}
                     style={{
                         left: `${value}%`
                     }}
-                /> */}
+                />
             </div>
         )
     }
@@ -62,6 +70,6 @@ function calculatePercent(node, event) {
     const offsetX = event.pageX - offsetLeft
     return clamp(offsetX / onePercent)
 }
-function calculateValue(currentTime, duration) {
-    return clamp(currentTime / duration * 100) || 0
+function calculateCurrentTime(percent, duration) {
+    return (percent * duration / 100) || 0
 }

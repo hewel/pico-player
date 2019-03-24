@@ -42,6 +42,7 @@
 .time
   display: flex
   flex-direction: column
+  +setFontScale(1)
 .tuningIcon
   +setFontScale(2, 1)
   cursor: pointer
@@ -49,7 +50,7 @@
   display: flex
   align-items: center
   width: 50%
-.tuningIcon, .volumeControl
+.time, .tuningIcon, .volumeControl
   margin-right: 12px
 .volumeIcon
   margin-right: 6px
