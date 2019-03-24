@@ -9,22 +9,22 @@
     "commit": "git add . && npx git-cz"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/plugin-proposal-class-properties": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
+    "@babel/core": "^7.4.0",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
     "@babel/preset-react": "^7.0.0",
-    "@types/ramda": "^0.26.3",
+    "@types/ramda": "^0.26.5",
     "@types/react": "^16.8.8",
     "babel-eslint": "^10.0.1",
     "babel-plugin-ramda": "^2.0.0",
     "cz-conventional-changelog": "2.1.0",
-    "eslint": "^5.14.1",
+    "eslint": "^5.15.3",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-react": "^7.12.4",
     "node-sass": "^4.11.0",
-    "parcel-bundler": "^1.12.0",
+    "parcel-bundler": "^1.12.3",
     "postcss-modules": "^1.4.1",
-    "sass": "^1.17.2"
+    "sass": "^1.17.3"
   },
   "dependencies": {
     "@material-ui/core": "^3.9.2",
@@ -34,8 +34,8 @@
     "axios": "^0.18.0",
     "clsx": "^1.0.3",
     "ramda": "^0.26.1",
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4"
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5"
   },
   "alias": {
     "assets": "./src/assets/",
