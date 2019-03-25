@@ -108,10 +108,10 @@ export default class ControlPanel extends Component {
             isPlaying ? 'pause' : 'play'
         ]
 
-        const [currentTime, duration] = [
-            formatAudioTime(audioCurrentTime),
-            formatAudioTime(audioDuration)
-        ]
+        // const [currentTime, duration] = [
+        //     formatAudioTime(audioCurrentTime),
+        //     formatAudioTime(audioDuration)
+        // ]
 
         return (
             <MuiThemeProvider theme={theme}>
