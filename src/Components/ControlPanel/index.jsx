@@ -15,7 +15,6 @@ import Audio from '../Audio'
 import Progress from '../Progress'
 
 import fetch from 'utils/fetch'
-import formatAudioTime from 'utils/format'
 
 import styles from './style.sass'
 
@@ -117,17 +116,17 @@ export default class ControlPanel extends Component {
             <MuiThemeProvider theme={theme}>
                 <Paper className={clsx(styles.controlPanel, className)} square {...props}>
                     <Progress
-                        className={styles.progress}
-                        currentTime={audioCurrentTime}
-                        duration={audioDuration}
-                        onChange={this.handleProgressChange}
+                      className={styles.progress}
+                      currentTime={audioCurrentTime}
+                      duration={audioDuration}
+                      onChange={this.handleProgressChange}
                     />
                     <Grid container spacing={32} className={styles.inner}>
                         <Grid item xs={2}>
                             <Album
-                                className={styles.albumCell}
-                                imageUrl={albumImageUrl}
-                                songName={songName}
+                              className={styles.albumCell}
+                              imageUrl={albumImageUrl}
+                              songName={songName}
                             />
                         </Grid>
                         <Grid item xs={3} className={styles.songInfo}>
@@ -137,9 +136,9 @@ export default class ControlPanel extends Component {
                         <Grid item xs={3} className={styles.controlButtonGroup}>
                             <Button color="primary"><Icon symbol="skipprevious" /></Button>
                             <Button
-                                color="primary"
-                                variant="contained"
-                                onClick={this.changePlayState}
+                              color="primary"
+                              variant="contained"
+                              onClick={this.changePlayState}
                             >
                                 <Icon symbol={playButtonSymbol} />
                             </Button>
@@ -151,33 +150,33 @@ export default class ControlPanel extends Component {
                                 <span>{duration}</span>
                             </div> */}
                             <Icon
-                                className={styles.tuningIcon}
-                                symbol={playModeSymbol}
-                                onClick={this.changePlayMode}
+                              className={styles.tuningIcon}
+                              symbol={playModeSymbol}
+                              onClick={this.changePlayMode}
                             />
                             <div className={styles.volumeControl}>
                                 <Icon
-                                    className={`${styles.tuningIcon} ${styles.volumeIcon}`}
-                                    symbol={volumeSymbol}
-                                    onClick={this.muteVolume}
+                                  className={`${styles.tuningIcon} ${styles.volumeIcon}`}
+                                  symbol={volumeSymbol}
+                                  onClick={this.muteVolume}
                                 />
                                 <Slider
-                                    value={volume}
-                                    disabled={isMuted}
-                                    onChange={this.changeVolume}
-                                ></Slider>
+                                  value={volume}
+                                  disabled={isMuted}
+                                  onChange={this.changeVolume}
+                                />
                             </div>
                             <Icon className={styles.tuningIcon} symbol="queuemusic" />
                         </Grid>
                     </Grid>
                 </Paper>
                 <Audio
-                    songUrl={songUrl}
-                    playCommand={playCommand}
-                    volume={volume}
-                    isMuted={isMuted}
-                    onAudioPlay={this.handleAudioPlay}
-                    getChangFunc={this.handelGetChangeFunc}
+                  songUrl={songUrl}
+                  playCommand={playCommand}
+                  volume={volume}
+                  isMuted={isMuted}
+                  onAudioPlay={this.handleAudioPlay}
+                  getChangFunc={this.handelGetChangeFunc}
                 />
             </MuiThemeProvider>
         )

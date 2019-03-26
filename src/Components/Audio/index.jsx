@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 export default class Audio extends Component {
 
@@ -19,29 +20,34 @@ export default class Audio extends Component {
     }
 
     componentDidUpdate = prevProps => {
-        const { playCommand, volume, isMuted, onAudioPlay } = prevProps
+        const { playCommand, volume, isMuted } = this.props
+        const [ prevPlayCommand, prevVolume, prevIsMuted ] = [
+            prevProps.playCommand,
+            prevProps.volume,
+            prevProps.isMuted
+        ]
         const audioNode = this.audioRef.current
         const audioDuration = audioNode.duration
 
-        if (playCommand !== this.props.playCommand) {
-            if (playCommand == 'play') {
+        if (prevPlayCommand !== playCommand) {
+            if (prevPlayCommand == 'play') {
                 audioNode.play()
                 this.audioTimer = setInterval(() => {
                     const audioCurrentTime = audioNode.currentTime
-                    onAudioPlay(audioDuration, audioCurrentTime)
+                    prevProps.onAudioPlay(audioDuration, audioCurrentTime)
                 }, 100)
 
             }
-            if (playCommand == 'pause') {
+            if (prevPlayCommand == 'pause') {
                 audioNode.pause()
                 clearInterval(this.audioTimer)
             }
         }
-        if (volume !== this.props.volume) {
+        if (prevVolume !== volume) {
             audioNode.volume = volume / 100
         }
-        if (isMuted !== this.props.isMuted) {
-            audioNode.muted = !isMuted
+        if (prevIsMuted !== isMuted) {
+            audioNode.muted = !prevIsMuted
         }
     }
     componentWillUnmount = () => {
@@ -57,9 +63,22 @@ export default class Audio extends Component {
 
         return (
             <audio
-                src={songUrl}
-                ref={this.audioRef}
+              src={songUrl}
+              ref={this.audioRef}
             />
         )
     }
+}
+Audio.propTypes = {
+    songUrl: PropTypes.string,
+    playCommand: PropTypes.string,
+    volume: PropTypes.number,
+    isMuted: PropTypes.bool,
+    getChangFunc: PropTypes.func,
+    onAudioPlay: PropTypes.func
+}
+Audio.defaultProps = {
+    playCommand: 'pause',
+    volume: 20,
+    isMuted: false
 }

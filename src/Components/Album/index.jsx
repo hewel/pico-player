@@ -1,22 +1,30 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
+import clsx from 'clsx'
+
 import { album, albumImg } from './style.sass'
 import defAlbumImage from 'assets/music-cover.png'
 
 export default function Album(props) {
     const { className, imageUrl, songName, ...otherProps } = props
-    const [albumImageUrl, albumAlt, albumClassName] = [
-        imageUrl || defAlbumImage,
-        songName || '没有歌曲',
-        className ? `${album} ${className}` : album,
-    ]
+    const albumClassName = clsx(className, album)
 
     return(
         <div className={albumClassName} {...otherProps}>
             <img
-                src={albumImageUrl}
-                alt={albumAlt}
-                className={`${albumImg}`}
+              src={imageUrl}
+              alt={songName}
+              className={`${albumImg}`}
             />
         </div>
     )
+}
+Album.propTypes = {
+    imageUrl: PropTypes.string,
+    songName: PropTypes.string
+}
+Album.defaultProps = {
+    imageUrl: defAlbumImage,
+    songName: '没有歌曲'
 }

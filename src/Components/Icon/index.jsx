@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import { iconfont } from './index.sass'
 
 export default function Icon(props) {
@@ -10,4 +12,10 @@ export default function Icon(props) {
             </svg>
         </div>
     )
+}
+Icon.propTypes = {
+    symbol: PropTypes.string
+}
+Icon.defaultProps = {
+    symbol: 'playarrow'
 }

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Chip from '@material-ui/core/Chip'
+
 import clsx from 'clsx'
 
 import clamp from 'utils/clamp'
@@ -13,7 +15,7 @@ export default class Progress extends Component {
     state = {
         value: 0
     }
-    componentDidUpdate = (prevProps, prevState) => {
+    componentDidUpdate = (prevProps) => {
         const { currentTime, duration } = this.props
         if (prevProps.currentTime !== currentTime) {
             this.setState({
@@ -39,26 +41,39 @@ export default class Progress extends Component {
     render() {
         const { currentTime, duration, className } = this.props
         const { value } = this.state
-        const classNames = clsx([className, styles.progress])
+        const [classNames, chipLabel] = [
+            clsx(className, styles.progress),
+            `${formatAudioTime(currentTime)}/${formatAudioTime(duration)}`
+        ]
         return (
             <div className={classNames}>
                 <LinearProgress
-                    className={styles.progressBar}
-                    variant="determinate"
-                    value={value}
-                    onClick={this.handleProgressClick}
+                  className={styles.progressBar}
+                  variant="determinate"
+                  value={value}
+                  onClick={this.handleProgressClick}
                 />
                 <Chip
-                    className={styles.thumb}
-                    color="primary"
-                    label={`${formatAudioTime(currentTime)}/${formatAudioTime(duration)}`}
-                    style={{
+                  className={styles.thumb}
+                  color="primary"
+                  label={chipLabel}
+                  style={{
                         left: `${value}%`
                     }}
                 />
             </div>
         )
     }
+}
+
+Progress.propTypes = {
+    currentTime: PropTypes.number,
+    duration: PropTypes.number,
+    onChange: PropTypes.func
+}
+Progress.defaultProps = {
+    currentTime: 0,
+    duration: 0
 }
 
 function calculatePercent(node, event) {
