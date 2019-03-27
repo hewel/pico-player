@@ -4,8 +4,6 @@ import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
 import Slider from '@material-ui/lab/Slider'
-import blue from '@material-ui/core/colors/blue'
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 
 import clsx from 'clsx'
 
@@ -17,15 +15,6 @@ import Progress from '../Progress'
 import fetch from 'utils/fetch'
 
 import styles from './style.sass'
-
-const theme = createMuiTheme({
-    palette: {
-        primary: blue
-    },
-    typography: {
-        useNextVariants: true,
-    }
-})
 
 export default class ControlPanel extends Component {
     state = {
@@ -73,11 +62,14 @@ export default class ControlPanel extends Component {
     muteVolume = () => {
         this.setState(({ isMuted }) => ({ isMuted: !isMuted }))
     }
-    handleAudioPlay = (audioDuration, audioCurrentTime) => {
+    handleAudioPlay = (audioDuration, audioCurrentTime, isEnd) => {
         this.setState({
             audioDuration,
             audioCurrentTime,
         })
+        if (isEnd) {
+            this.setState({ isPlaying: false})
+        }
     }
     handelGetChangeFunc = func => {
         this.changeCurrentTime = func
@@ -113,7 +105,7 @@ export default class ControlPanel extends Component {
         // ]
 
         return (
-            <MuiThemeProvider theme={theme}>
+            <>
                 <Paper className={clsx(styles.controlPanel, className)} square {...props}>
                     <Progress
                       className={styles.progress}
@@ -178,7 +170,7 @@ export default class ControlPanel extends Component {
                   onAudioPlay={this.handleAudioPlay}
                   getChangFunc={this.handelGetChangeFunc}
                 />
-            </MuiThemeProvider>
+            </>
         )
     }
 }

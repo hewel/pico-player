@@ -27,16 +27,16 @@ export default class Audio extends Component {
             prevProps.isMuted
         ]
         const audioNode = this.audioRef.current
-        const audioDuration = audioNode.duration
+        const { duration } = audioNode
 
         if (prevPlayCommand !== playCommand) {
             if (prevPlayCommand == 'play') {
                 audioNode.play()
+                audioNode.volume = volume / 100
                 this.audioTimer = setInterval(() => {
-                    const audioCurrentTime = audioNode.currentTime
-                    prevProps.onAudioPlay(audioDuration, audioCurrentTime)
+                    const { currentTime, ended } = audioNode
+                    prevProps.onAudioPlay(duration, currentTime, ended)
                 }, 100)
-
             }
             if (prevPlayCommand == 'pause') {
                 audioNode.pause()
@@ -44,7 +44,7 @@ export default class Audio extends Component {
             }
         }
         if (prevVolume !== volume) {
-            audioNode.volume = volume / 100
+            audioNode.volume = prevVolume / 100
         }
         if (prevIsMuted !== isMuted) {
             audioNode.muted = !prevIsMuted

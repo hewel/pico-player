@@ -12,16 +12,33 @@ import formatAudioTime from 'utils/format'
 import styles from './style.sass'
 
 export default class Progress extends Component {
+    progressRef = React.createRef()
+
     state = {
-        value: 0
+        value: 0,
+        isThumbMouseDown: false
     }
+
     componentDidUpdate = (prevProps) => {
         const { currentTime, duration } = this.props
-        if (prevProps.currentTime !== currentTime) {
+        const { isThumbMouseDown } = this.state
+        if (prevProps.currentTime !== currentTime && !isThumbMouseDown) {
             this.setState({
-                value: parseInt(clamp(currentTime / duration * 100)) || 0
+                value: parseFloat(clamp(currentTime / duration * 100)) || 0
             })
         }
+    }
+    componentWillUnmount = () => {
+        this.removeMouseEvent()
+    }
+
+    addMouseEvent = () => {
+        document.body.addEventListener('mouseup', this.handleMouseUp)
+        document.body.addEventListener('mousemove', this.handleMouseMove)
+    }
+    removeMouseEvent = () => {
+        document.body.removeEventListener('mouseup', this.handleMouseUp)
+        document.body.removeEventListener('mousemove', this.handleMouseMove)
     }
 
     handleProgressClick = (event) => {
@@ -30,6 +47,23 @@ export default class Progress extends Component {
         this.setState({ value }, () => {
             this.handleChange(value)
         })
+    }
+    handleThumbMouseDown = event => {
+        event.preventDefault()
+        this.setState({ isThumbMouseDown: true })
+        this.addMouseEvent()
+    }
+    handleMouseMove = event => {
+        const node = this.progressRef.current
+        const value = calculatePercent(node, event)
+        this.setState({ value })
+    }
+    handleMouseUp = () => {
+        const { value } = this.state
+        this.setState({ isThumbMouseDown: false }, () => {
+            this.removeMouseEvent()
+        })
+        this.handleChange(value)
     }
     handleChange = value => {
         const { duration, onChange } = this.props
@@ -40,27 +74,37 @@ export default class Progress extends Component {
 
     render() {
         const { currentTime, duration, className } = this.props
-        const { value } = this.state
-        const [classNames, chipLabel] = [
+        const { value, isThumbMouseDown } = this.state
+
+        const [classNames, thumbStyle] = [
             clsx(className, styles.progress),
-            `${formatAudioTime(currentTime)}/${formatAudioTime(duration)}`
+            { transform: `translate3D(${value}%, 0, 0)` }
         ]
+        const isEnd = (currentTime == 0 || currentTime == duration)
+        const chipLabel = isEnd ? null : `${formatAudioTime(currentTime)}/${formatAudioTime(duration)}`
+
         return (
-            <div className={classNames}>
+            <div className={classNames} ref={this.progressRef}>
                 <LinearProgress
                   className={styles.progressBar}
                   variant="determinate"
                   value={value}
-                  onClick={this.handleProgressClick}
+                  onClick={isEnd ? null : this.handleProgressClick}
+                  is-mouse-down={isThumbMouseDown.toString()}
                 />
-                <Chip
+                <div
                   className={styles.thumb}
-                  color="primary"
-                  label={chipLabel}
-                  style={{
-                        left: `${value}%`
-                    }}
-                />
+                  style={thumbStyle}
+                  onMouseDown={isEnd ? null : this.handleThumbMouseDown}
+                  is-mouse-down={isThumbMouseDown.toString()}
+                >
+                    <Chip
+                      className={styles.chip}
+                      color="primary"
+                      label={chipLabel}
+                      is-end={isEnd.toString()}
+                    />
+                </div>
             </div>
         )
     }

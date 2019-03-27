@@ -4,9 +4,13 @@ const Path = require('path')
 const entryFiles = Path.join(__dirname, './src/index.html')
 
 const options = {
-    publicUrl: 'assets/', // 静态资源的 url ，默认为 '/'
+    scopeHoist: true,
+    https: true,
+    logLevel: 5,
     detailedReport: true
-}
+};
 
-// eslint-disable-next-line no-unused-vars
-const bundler = new Bundler(entryFiles, options)
+(async () => {
+    // eslint-disable-next-line no-unused-vars
+    const bundler = new Bundler(entryFiles, options)
+})()

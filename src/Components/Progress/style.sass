@@ -4,9 +4,17 @@
 .progressBar
   cursor: pointer
 .thumb
-  position: absolute
-  bottom: 8px
-  height: 24px !important
-  font-size: 10px !important
-  transform: translate3D(-50%,0,0)
-  transition: all .4s linear !important
+  position: relative
+  user-select: none
+  transform: translate3D(0,0,0)
+  transition: transform .4s
+  &[is-mouse-down=true]
+    transition: none
+  .chip
+    position: absolute
+    cursor: pointer
+    bottom: 8px
+    height: 24px
+    font-size: 10px
+    transform: translateX(-50%)
+
