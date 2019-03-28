@@ -37,12 +37,14 @@ module.exports = {
         'linebreak-style': 'off',
         'no-console': ['error', { allow: ["warn", "error"] }],
         'no-alert': 'error',
-        'no-unused-vars': ['warn', { vars: 'local'}],
+        'no-unused-vars': 'off',
         'no-template-curly-in-string': 'error',
 
         'import/no-unresolved': 'off',
 
-        'react/prop-types': ['warn', { ignore: ['className']}],
+        'react/prop-types': ['warn', {
+            ignore: ['className', 'children']
+        }],
         'react/boolean-prop-naming': 'error',
         'react/destructuring-assignment': 'warn',
         'react/no-deprecated': 'warn',

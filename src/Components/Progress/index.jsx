@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Chip from '@material-ui/core/Chip'
+import { withStyles } from '@material-ui/core/styles'
 
 import clsx from 'clsx'
 
@@ -11,7 +12,16 @@ import formatAudioTime from 'utils/format'
 
 import styles from './style.sass'
 
-export default class Progress extends Component {
+const style = {
+    bar1Determinate: {
+        transition: `transform .2s cubic-bezier(0.45, 0.05, 0.55, 0.95)`
+    },
+    bar1DeterminateOff: {
+        transition: 'none'
+    }
+}
+
+class Progress extends Component {
     progressRef = React.createRef()
 
     state = {
@@ -73,13 +83,16 @@ export default class Progress extends Component {
     }
 
     render() {
-        const { currentTime, duration, className } = this.props
+        const { currentTime, duration, className, classes } = this.props
         const { value, isThumbMouseDown } = this.state
 
         const [classNames, thumbStyle] = [
             clsx(className, styles.progress),
             { transform: `translate3D(${value}%, 0, 0)` }
         ]
+        const progressClasses = {
+            bar1Determinate: isThumbMouseDown ? classes.bar1DeterminateOff : classes.bar1Determinate
+        }
         const isEnd = (currentTime == 0 || currentTime == duration)
         const chipLabel = isEnd ? null : `${formatAudioTime(currentTime)}/${formatAudioTime(duration)}`
 
@@ -90,7 +103,7 @@ export default class Progress extends Component {
                   variant="determinate"
                   value={value}
                   onClick={isEnd ? null : this.handleProgressClick}
-                  is-mouse-down={isThumbMouseDown.toString()}
+                  classes={progressClasses}
                 />
                 <div
                   className={styles.thumb}
@@ -113,12 +126,15 @@ export default class Progress extends Component {
 Progress.propTypes = {
     currentTime: PropTypes.number,
     duration: PropTypes.number,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    classes: PropTypes.object.isRequired
 }
 Progress.defaultProps = {
     currentTime: 0,
     duration: 0
 }
+
+export default withStyles(style)(Progress)
 
 function calculatePercent(node, event) {
     const { left, width } = node.getBoundingClientRect()

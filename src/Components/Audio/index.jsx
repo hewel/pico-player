@@ -18,24 +18,28 @@ export default class Audio extends Component {
             getChangFunc(this.changeCurrentTime)
         }
     }
-
+    //MARK: Component update
     componentDidUpdate = prevProps => {
-        const { playCommand, volume, isMuted } = this.props
+        const { songUrl, playCommand, volume, isMuted, onAudioPlay, onAudioEnd } = this.props
         const [ prevPlayCommand, prevVolume, prevIsMuted ] = [
             prevProps.playCommand,
             prevProps.volume,
             prevProps.isMuted
         ]
         const audioNode = this.audioRef.current
-        const { duration } = audioNode
 
-        if (prevPlayCommand !== playCommand) {
+        if (prevPlayCommand !== playCommand && songUrl) {
             if (prevPlayCommand == 'play') {
                 audioNode.play()
                 audioNode.volume = volume / 100
                 this.audioTimer = setInterval(() => {
-                    const { currentTime, ended } = audioNode
-                    prevProps.onAudioPlay(duration, currentTime, ended)
+                    const { currentTime, duration, ended } = audioNode
+                    if (onAudioPlay) {
+                        onAudioPlay(duration, currentTime)
+                    }
+                    if (onAudioEnd && ended) {
+                        onAudioEnd(ended)
+                    }
                 }, 100)
             }
             if (prevPlayCommand == 'pause') {
@@ -44,15 +48,16 @@ export default class Audio extends Component {
             }
         }
         if (prevVolume !== volume) {
-            audioNode.volume = prevVolume / 100
+            audioNode.volume = volume / 100
         }
         if (prevIsMuted !== isMuted) {
-            audioNode.muted = !prevIsMuted
+            audioNode.muted = isMuted
         }
     }
     componentWillUnmount = () => {
         clearInterval(this.audioTimer)
     }
+    //MARK: Audio change currentTime function
     changeCurrentTime = value => {
         const audioNode = this.audioRef.current
         audioNode.currentTime = value
@@ -69,14 +74,17 @@ export default class Audio extends Component {
         )
     }
 }
+// MARK: Component propTypes
 Audio.propTypes = {
     songUrl: PropTypes.string,
     playCommand: PropTypes.string,
     volume: PropTypes.number,
     isMuted: PropTypes.bool,
     getChangFunc: PropTypes.func,
-    onAudioPlay: PropTypes.func
+    onAudioPlay: PropTypes.func,
+    onAudioEnd: PropTypes.func
 }
+// MARK: Component defaultProps
 Audio.defaultProps = {
     playCommand: 'pause',
     volume: 20,

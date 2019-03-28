@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
@@ -18,10 +19,7 @@ import styles from './style.sass'
 
 export default class ControlPanel extends Component {
     state = {
-        albumImageUrl: `https://p1.music.126.net/7tbeDDuTR_U_4F_u1qGKWQ==/2539871861205743.jpg`,
         songUrl: ``,
-        songName: 'Lost In The Echo',
-        songSinger: 'Linkin Park',
         isPlaying: false,
         playMode: 0,
         volume: 30,
@@ -30,17 +28,37 @@ export default class ControlPanel extends Component {
         audioDuration: 0,
     }
 
-    componentWillMount = () => {
-        fetchSongUrl({
-            id: 4151839
-        })
-            .then(res => {
-                this.setState({
-                    songUrl: res
+    componentDidMount = () => {
+        const { songDetail } = this.props
+        const id = songDetail.id
+        if (id) {
+            getSongUrl(id)
+                .then(res => {
+                    this.setState({
+                        songUrl: res
+                    })
                 })
-            })
+        }
+    }
+    componentDidUpdate = (prevProps, prevState) => {
+        const { songDetail } = this.props
+        const [id, prevId] = [
+            songDetail.id,
+            prevProps.songDetail.id
+        ]
+        if (id !== prevId) {
+            this.setState({ isPlaying: false})
+            getSongUrl(id)
+                .then(res => {
+                    this.setState({
+                        isPlaying: true,
+                        songUrl: res
+                    })
+                })
+        }
     }
 
+    //MARK: Change state functions
     changePlayState = () => {
         this.setState(({ isPlaying }) => ({ isPlaying: !isPlaying }))
     }
@@ -59,16 +77,22 @@ export default class ControlPanel extends Component {
             volume: value
         })
     }
+    //MARK: Event functions
     muteVolume = () => {
         this.setState(({ isMuted }) => ({ isMuted: !isMuted }))
     }
-    handleAudioPlay = (audioDuration, audioCurrentTime, isEnd) => {
+    handleAudioPlay = (audioDuration, audioCurrentTime) => {
         this.setState({
             audioDuration,
             audioCurrentTime,
         })
-        if (isEnd) {
-            this.setState({ isPlaying: false})
+    }
+    handleAudioEnd = () => {
+        const { playMode } = this.state
+        const { songDetail, onAudioEnd } = this.props
+        this.setState({ isPlaying: false })
+        if (onAudioEnd) {
+            onAudioEnd(songDetail.index, playMode)
         }
     }
     handelGetChangeFunc = func => {
@@ -79,10 +103,7 @@ export default class ControlPanel extends Component {
     }
     render() {
         const {
-            albumImageUrl,
             songUrl,
-            songName,
-            songSinger,
             isPlaying,
             playMode,
             volume,
@@ -90,7 +111,8 @@ export default class ControlPanel extends Component {
             audioCurrentTime,
             audioDuration,
         } = this.state
-        const { className, ...props } = this.props
+        const { songDetail, className, onAudioEnd, ...props } = this.props
+        const { name, albumPic, artist } = songDetail
 
         const [playButtonSymbol, volumeSymbol, playModeSymbol, playCommand] = [
             isPlaying ? 'pause' : 'playarrow',
@@ -117,13 +139,13 @@ export default class ControlPanel extends Component {
                         <Grid item xs={2}>
                             <Album
                               className={styles.albumCell}
-                              imageUrl={albumImageUrl}
-                              songName={songName}
+                              imageUrl={albumPic}
+                              songName={name}
                             />
                         </Grid>
                         <Grid item xs={3} className={styles.songInfo}>
-                            <span className={styles.songName}>{songName}</span>
-                            <span className={styles.songSinger}>{songSinger}</span>
+                            <span className={styles.songName}>{name}</span>
+                            <span className={styles.songSinger}>{artist}</span>
                         </Grid>
                         <Grid item xs={3} className={styles.controlButtonGroup}>
                             <Button color="primary"><Icon symbol="skipprevious" /></Button>
@@ -168,11 +190,17 @@ export default class ControlPanel extends Component {
                   volume={volume}
                   isMuted={isMuted}
                   onAudioPlay={this.handleAudioPlay}
+                  onAudioEnd={this.handleAudioEnd}
                   getChangFunc={this.handelGetChangeFunc}
                 />
             </>
         )
     }
+}
+// MARK: Component propTypes
+ControlPanel.propTypes = {
+    songDetail: PropTypes.object.isRequired,
+    onAudioEnd: PropTypes.func
 }
 
 function getVolumeSymbol(value = 0) {
@@ -189,7 +217,7 @@ function getPlayModeSymbol(value = 0) {
     return modeSymbolArr[value]
 }
 
-function fetchSongUrl(params) {
-    return fetch('/song/url', params)
+function getSongUrl(id) {
+    return fetch('/song/url', {id})
         .then(response => response.data[0].url)
 }
