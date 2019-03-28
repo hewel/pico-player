@@ -27,6 +27,13 @@ export default class PlayList extends Component {
                 })
         }
     }
+    componentDidUpdate = (prevProps, prevState) => {
+        const { songIndex: prevSongIndex } = prevProps
+        const { songIndex } = this.props
+        if (prevSongIndex !== songIndex) {
+            this.setRowSelected(songIndex)
+        }
+    }
 
     handleRowDoubleClick = (index, event) => {
         event.preventDefault()
@@ -88,6 +95,7 @@ export default class PlayList extends Component {
 }
 PlayList.propTypes = {
     idList: PropTypes.array,
+    songIndex: PropTypes.number,
     onSelect: PropTypes.func
 }
 

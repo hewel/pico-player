@@ -94,6 +94,9 @@ export default class ControlPanel extends Component {
         if (onAudioEnd) {
             onAudioEnd(songDetail.index, playMode)
         }
+        if (playMode === 1) {
+            this.setState({ isPlaying: true })
+        }
     }
     handelGetChangeFunc = func => {
         this.changeCurrentTime = func
