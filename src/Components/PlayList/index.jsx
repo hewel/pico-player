@@ -1,22 +1,18 @@
-import React, { Component } from 'react'
+/* eslint-disable no-console */
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 import Paper from '@material-ui/core/Paper'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-
-import TableCell from './TableCell'
-
+import VirtualizedTable from './VirtualizedTable'
 
 import fetch from 'utils/fetch'
-import format from 'utils/format'
 
-export default class PlayList extends Component {
+export default class PlayList extends PureComponent {
     state = {
         songDetailList: [],
-        nowPlayingSongIndex: null
+        nowPlayingSongIndex: null,
+        page: 0,
+        rowsPerPage: 8,
     }
     componentDidMount = () => {
         const { idList } = this.props
@@ -28,10 +24,16 @@ export default class PlayList extends Component {
         }
     }
     componentDidUpdate = (prevProps, prevState) => {
-        const { songIndex: prevSongIndex } = prevProps
-        const { songIndex } = this.props
+        const { songIndex: prevSongIndex, idList: prevIdList } = prevProps
+        const { songIndex, idList } = this.props
         if (prevSongIndex !== songIndex) {
             this.setRowSelected(songIndex)
+        }
+        if (prevIdList !== idList) {
+            Promise.all(idList.map(async id => getSongDetail(id)))
+                .then(results => {
+                    this.setState({ songDetailList: results })
+                })
         }
     }
 
@@ -39,56 +41,45 @@ export default class PlayList extends Component {
         event.preventDefault()
         this.setRowSelected(index)
     }
+    handlePageChange = (event, page) => {
+        this.setState({page})
+    }
     setRowSelected = index => {
         const { songDetailList } = this.state
         const { onSelect } = this.props
         this.setState({ nowPlayingSongIndex: index }, () => {
             if (onSelect) {
-                const { id, name, artists, albumPic } = songDetailList[index]
+                const { id, name, artist, albumPic } = songDetailList[index]
                 onSelect({
                     index,
                     id,
                     name,
                     albumPic,
-                    artist: joinArtistNames(artists)
+                    artist
                 })
             }
         })
     }
-
+    demoEventFunc = (column, data) => {
+        console.log(column, data)
+    }
     render() {
-        const { songDetailList, nowPlayingSongIndex } = this.state
+        const { songDetailList, nowPlayingSongIndex, page, rowsPerPage } = this.state
+        const columns = [
+            { width: 200, dataKey: 'name', label: '歌曲', flexGrow: 2.0 },
+            { width: 120, dataKey: 'artist', label: '歌手', flexGrow: 1.0 },
+            { width: 120, dataKey: 'albumName', label: '专辑', flexGrow: 1.0 },
+            { width: 120, dataKey: 'duration', label: '时长', isDate: true},
+        ]
         return(
-            <Paper square>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>歌曲</TableCell>
-                            <TableCell>歌手</TableCell>
-                            <TableCell>专辑</TableCell>
-                            <TableCell align="right">时长</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {songDetailList.map((detail, index) => {
-                            const { id, name, artists, albumName, duration, isPlaying } = detail
-                            const selected = nowPlayingSongIndex === index
-                            return (
-                                <TableRow
-                                  key={id}
-                                  selected={selected}
-                                  hover={true}
-                                  onDoubleClick={this.handleRowDoubleClick.bind(this, index)}
-                                >
-                                    <TableCell scoop="row">{name}</TableCell>
-                                    <TableCell>{joinArtistNames(artists)}</TableCell>
-                                    <TableCell>{albumName}</TableCell>
-                                    <TableCell align="right">{format(duration)}</TableCell>
-                                </TableRow>
-                            )
-                        })}
-                    </TableBody>
-                </Table>
+            <Paper square style={{ height: 400, width: '100%' }}>
+                <VirtualizedTable
+                  rowCount={songDetailList.length}
+                  rowGetter={({index}) => songDetailList[index]}
+                  columns={columns}
+                  onRowClick={({index, event}) => this.setRowSelected(index)}
+                >
+                </VirtualizedTable>
             </Paper>
         )
     }
@@ -113,10 +104,9 @@ function getSongDetail(id) {
                 albumId: al.id,
                 albumName: al.name,
                 albumPic: al.picUrl,
-                artists,
+                artist: joinArtistNames(artists),
                 duration: dt / 1000,
-                publishTime,
-                isPlaying: false
+                publishTime
             }
         })
 }
@@ -127,4 +117,9 @@ function joinArtistNames(artists=[]) {
     }
     const artistNames = artists.map(artist => artist.name)
     return artistNames.join(' & ')
+}
+
+function checkSongCanPlay(id) {
+    return fetch('/check/music', { id })
+        .then(res => res.success)
 }

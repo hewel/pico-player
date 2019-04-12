@@ -15,7 +15,7 @@ export default function Album(props) {
             <img
               src={imageUrl}
               alt={songName}
-              className={`${albumImg}`}
+              className={albumImg}
             />
         </div>
     )

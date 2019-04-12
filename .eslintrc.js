@@ -3,48 +3,55 @@ module.exports = {
     env: {
         browser: true,
         es6: true,
-        node: true
+        node: true,
     },
-    extends:[
+    extends: [
         'eslint:recommended',
         'plugin:react/recommended',
         'plugin:import/errors',
-        'plugin:import/warnings'
+        'plugin:import/warnings',
     ],
     parserOptions: {
-        ecmaFeatures: { jsx: true},
+        ecmaFeatures: { jsx: true },
         ecmaVersion: 7,
-        sourceType: 'module'
+        sourceType: 'module',
     },
     parser: 'babel-eslint',
-    plugins: ['react', 'import'],
+    plugins: ['react', 'import', 'react-hooks'],
     settings: {
         react: {
             pragma: 'React',
-            version: 'detect'
-        }
+            version: 'detect',
+        },
     },
     globals: {
-        global: 'readonly'
+        global: 'readonly',
     },
     rules: {
         // indent: ['error', 4],
-        quotes: ['error', 'single', {
-            allowTemplateLiterals: true
-        }],
+        quotes: [
+            'error',
+            'single',
+            {
+                allowTemplateLiterals: true,
+            },
+        ],
         semi: ['error', 'never'],
 
         'linebreak-style': 'off',
-        'no-console': ['error', { allow: ["warn", "error"] }],
+        'no-console': ['warn', { allow: ['warn', 'error'] }],
         'no-alert': 'error',
         'no-unused-vars': 'off',
         'no-template-curly-in-string': 'error',
 
         'import/no-unresolved': 'off',
 
-        'react/prop-types': ['warn', {
-            ignore: ['className', 'children']
-        }],
+        'react/prop-types': [
+            'warn',
+            {
+                ignore: ['className', 'children'],
+            },
+        ],
         'react/boolean-prop-naming': 'error',
         'react/destructuring-assignment': 'warn',
         'react/no-deprecated': 'warn',
@@ -53,18 +60,24 @@ module.exports = {
 
         'react/jsx-closing-bracket-location': 'error',
         'react/jsx-closing-tag-location': 'error',
-        'react/jsx-curly-spacing': ['error', { when: 'never'}],
+        'react/jsx-curly-spacing': ['error', { when: 'never' }],
         'react/jsx-equals-spacing': ['error', 'never'],
         'react/jsx-first-prop-new-line': ['error', 'multiline'],
         'react/jsx-indent': ['error', 4],
         'react/jsx-indent-props': ['error', 2],
         'react/jsx-props-no-multi-spaces': 'error',
         'react/jsx-no-duplicate-props': 'error',
-        'react/jsx-tag-spacing': ['error', {
-            closingSlash: "never",
-            beforeSelfClosing: "always",
-            afterOpening: "never",
-        }],
-        'react/jsx-wrap-multilines': ['error', { return: 'parens-new-line' }]
-    }
+        'react/jsx-tag-spacing': [
+            'error',
+            {
+                closingSlash: 'never',
+                beforeSelfClosing: 'always',
+                afterOpening: 'never',
+            },
+        ],
+        'react/jsx-wrap-multilines': ['error', { return: 'parens-new-line' }],
+
+        'react-hooks/rules-of-hooks': 'error', // 检查 Hook 的规则
+        'react-hooks/exhaustive-deps': 'warn', // 检查 effect 的依赖
+    },
 }

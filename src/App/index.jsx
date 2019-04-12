@@ -8,6 +8,8 @@ import ControlPanel from '../Components/ControlPanel'
 
 import { curry } from 'ramda'
 
+import fetch from 'utils/fetch'
+
 import { initStyle } from './style.sass'
 import 'assets/iconfont/iconfont.js'
 
@@ -22,10 +24,17 @@ const theme = createMuiTheme({
 
 export default class App extends Component {
     state = {
-        songIdList: [4151839, 3420341, 1868486, 26199445, 37610440],
+        songIdList: [4151839, 3420341, 1868486, 26199445, 37610440, 509781585, 26199445, 26199445],
         nowPlayingSong: {},
         nowPlayingSongIndex: null
     }
+    componentDidMount = async () => {
+        this.setState({
+            songIdList: await getPlaylist(109323387)
+        })
+    }
+
+
     handlePlayListSelect = (detail) => {
         this.setState({ nowPlayingSong: detail})
     }
@@ -85,4 +94,11 @@ function random(value, max) {
         return random(value, max)
     }
     return randomNum
+}
+
+function getPlaylist(id) {
+    return fetch('/playlist/detail', { id }).then(res => {
+        const tracks = res.playlist.tracks
+        return tracks.map(item => item.id)
+    })
 }

@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
-export default class Audio extends Component {
+export default class Audio extends PureComponent {
 
     audioRef = React.createRef()
 
@@ -32,15 +32,7 @@ export default class Audio extends Component {
             if (prevPlayCommand == 'play') {
                 audioNode.play()
                 audioNode.volume = volume / 100
-                this.audioTimer = setInterval(() => {
-                    const { currentTime, duration, ended } = audioNode
-                    if (onAudioPlay) {
-                        onAudioPlay(duration, currentTime)
-                    }
-                    if (onAudioEnd && ended) {
-                        onAudioEnd(ended)
-                    }
-                }, 100)
+                this.audioTimer = setInterval(this.refreshAudioTime.bind(this, audioNode), 200)
             }
             if (prevPlayCommand == 'pause') {
                 audioNode.pause()
@@ -57,7 +49,18 @@ export default class Audio extends Component {
     componentWillUnmount = () => {
         clearInterval(this.audioTimer)
     }
-    //MARK: Audio change currentTime function
+    //MARK: Refresh Audio time function
+    refreshAudioTime = (audioNode) => {
+        const { onAudioPlay, onAudioEnd } = this.props
+        const { currentTime, duration, ended } = audioNode
+        if (onAudioPlay) {
+            onAudioPlay(duration, currentTime)
+        }
+        if (onAudioEnd && ended) {
+            onAudioEnd(ended)
+        }
+    }
+    //MARK: Change Audio currentTime function
     changeCurrentTime = value => {
         const audioNode = this.audioRef.current
         audioNode.currentTime = value

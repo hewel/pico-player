@@ -1,9 +1,11 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Chip from '@material-ui/core/Chip'
 import { withStyles } from '@material-ui/core/styles'
+
+import { Global } from '@emotion/core'
 
 import clsx from 'clsx'
 
@@ -21,12 +23,12 @@ const style = {
     }
 }
 
-class Progress extends Component {
+class Progress extends PureComponent {
     progressRef = React.createRef()
 
     state = {
         value: 0,
-        isThumbMouseDown: false
+        isThumbMouseDown: false,
     }
 
     componentDidUpdate = (prevProps) => {
@@ -34,7 +36,7 @@ class Progress extends Component {
         const { isThumbMouseDown } = this.state
         if (prevProps.currentTime !== currentTime && !isThumbMouseDown) {
             this.setState({
-                value: parseFloat(clamp(currentTime / duration * 100)) || 0
+                value: clamp(currentTime / duration * 100) || 0
             })
         }
     }
@@ -105,9 +107,13 @@ class Progress extends Component {
                   onClick={isEnd ? null : this.handleProgressClick}
                   classes={progressClasses}
                 />
+                <Global
+                  styles={{
+                    '.thumb-move': thumbStyle
+                  }}
+                />
                 <div
-                  className={styles.thumb}
-                  style={thumbStyle}
+                  className={clsx(styles.thumb, 'thumb-move')}
                   onMouseDown={isEnd ? null : this.handleThumbMouseDown}
                   is-mouse-down={isThumbMouseDown.toString()}
                 >

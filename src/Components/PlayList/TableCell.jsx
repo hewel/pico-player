@@ -2,25 +2,39 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import TableCell from '@material-ui/core/TableCell'
-import { withStyles } from '@material-ui/core/styles'
+import { css } from '@emotion/core'
+import clsx from 'clsx'
 
-const styles = {
-    body: {
-        'border-bottom': 'none'
-    }
-}
-
-function ReTableCell(props) {
-    const { classes, children, ...other } = props
+const ReTableCell = ({ variant, rowHeight, flexGrow, className, children, ...other }) => {
+    const isBody = variant == 'body'
+    const flexGrowCss = flexGrow && `flex-grow: ${flexGrow};`
 
     return (
-        <TableCell classes={classes} {...other}>
+        <TableCell
+          className={clsx(className, 'table-cell')}
+          component="div"
+          variant={variant}
+          css={css`
+            display: flex;
+            align-items: center;
+            flex: 1;
+            ${flexGrowCss}
+            height: ${rowHeight}px;
+            ${isBody && 'border-bottom: 0;'}
+          `}
+          {...other}
+        >
             {children}
         </TableCell>
     )
 }
 ReTableCell.propTypes = {
-    classes: PropTypes.object.isRequired
+    rowHeight: PropTypes.number,
+    variant: PropTypes.string.isRequired,
+    flexGrow: PropTypes.number
+}
+ReTableCell.defaultProps = {
+    rowHeight: 48
 }
 
-export default withStyles(styles)(ReTableCell)
+export default ReTableCell

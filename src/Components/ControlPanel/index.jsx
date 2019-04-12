@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 import Button from '@material-ui/core/Button'
@@ -17,7 +17,7 @@ import fetch from 'utils/fetch'
 
 import styles from './style.sass'
 
-export default class ControlPanel extends Component {
+export default class ControlPanel extends PureComponent {
     state = {
         songUrl: ``,
         isPlaying: false,
@@ -28,18 +28,18 @@ export default class ControlPanel extends Component {
         audioDuration: 0,
     }
 
-    componentDidMount = () => {
-        const { songDetail } = this.props
-        const id = songDetail.id
-        if (id) {
-            getSongUrl(id)
-                .then(res => {
-                    this.setState({
-                        songUrl: res
-                    })
-                })
-        }
-    }
+    // componentDidMount = () => {
+    //     const { songDetail } = this.props
+    //     const id = songDetail.id
+    //     if (id) {
+    //         getSongUrl(id)
+    //             .then(res => {
+    //                 this.setState({
+    //                     songUrl: res
+    //                 })
+    //             })
+    //     }
+    // }
     componentDidUpdate = (prevProps, prevState) => {
         const { songDetail } = this.props
         const [id, prevId] = [
@@ -48,13 +48,12 @@ export default class ControlPanel extends Component {
         ]
         if (id !== prevId) {
             this.setState({ isPlaying: false})
-            getSongUrl(id)
-                .then(res => {
-                    this.setState({
-                        isPlaying: true,
-                        songUrl: res
-                    })
+            getSongUrl(id).then(res => {
+                this.setState({
+                    isPlaying: true,
+                    songUrl: res
                 })
+            })
         }
     }
 
@@ -147,7 +146,9 @@ export default class ControlPanel extends Component {
                             />
                         </Grid>
                         <Grid item xs={3} className={styles.songInfo}>
-                            <span className={styles.songName}>{name}</span>
+                            <span className={styles.songName}>
+                                {name}
+                            </span>
                             <span className={styles.songSinger}>{artist}</span>
                         </Grid>
                         <Grid item xs={3} className={styles.controlButtonGroup}>
