@@ -10,6 +10,9 @@ module.exports = {
         'plugin:react/recommended',
         'plugin:import/errors',
         'plugin:import/warnings',
+        'plugin:prettier/recommended',
+        'prettier',
+        'prettier/react',
     ],
     parserOptions: {
         ecmaFeatures: { jsx: true },
@@ -17,7 +20,7 @@ module.exports = {
         sourceType: 'module',
     },
     parser: 'babel-eslint',
-    plugins: ['react', 'import', 'react-hooks'],
+    plugins: ['react', 'import', 'react-hooks', 'prettier'],
     settings: {
         react: {
             pragma: 'React',
@@ -28,7 +31,7 @@ module.exports = {
         global: 'readonly',
     },
     rules: {
-        // indent: ['error', 4],
+        indent: ['error', 4],
         quotes: [
             'error',
             'single',
@@ -64,7 +67,7 @@ module.exports = {
         'react/jsx-equals-spacing': ['error', 'never'],
         'react/jsx-first-prop-new-line': ['error', 'multiline'],
         'react/jsx-indent': ['error', 4],
-        'react/jsx-indent-props': ['error', 2],
+        'react/jsx-indent-props': ['error', 4],
         'react/jsx-props-no-multi-spaces': 'error',
         'react/jsx-no-duplicate-props': 'error',
         'react/jsx-tag-spacing': [

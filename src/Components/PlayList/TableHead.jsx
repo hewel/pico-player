@@ -13,25 +13,25 @@ export default class TableHead extends PureComponent {
                 label: PropTypes.string,
                 headHeight: PropTypes.number,
             })
-        ).isRequired
+        ).isRequired,
     }
 
     render() {
         const { headList, className, ...props } = this.props
         return (
             <div
-              className={clsx(className, 'table-head')}
-              css={css`
-                display: flex;
-              `}
-              {...props}
+                className={clsx(className, 'table-head')}
+                css={css`
+                    display: flex;
+                `}
+                {...props}
             >
                 {headList.map(({ label, headHeight, ...other }, index) => (
                     <TableCell
-                      key={index}
-                      variant="head"
-                      rowHeight={headHeight}
-                      {...other}
+                        key={index}
+                        variant="head"
+                        rowHeight={headHeight}
+                        {...other}
                     >
                         {label}
                     </TableCell>

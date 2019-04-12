@@ -8,14 +8,14 @@ export default function Icon(props) {
     return (
         <div {...otherProps}>
             <svg className={iconfont} aria-hidden="true">
-                <use xlinkHref={`#icon-${symbol}`}></use>
+                <use xlinkHref={`#icon-${symbol}`} />
             </svg>
         </div>
     )
 }
 Icon.propTypes = {
-    symbol: PropTypes.string
+    symbol: PropTypes.string,
 }
 Icon.defaultProps = {
-    symbol: 'playarrow'
+    symbol: 'playarrow',
 }

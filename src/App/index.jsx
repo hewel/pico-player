@@ -15,33 +15,45 @@ import 'assets/iconfont/iconfont.js'
 
 const theme = createMuiTheme({
     palette: {
-        primary: blue
+        primary: blue,
     },
     typography: {
         useNextVariants: true,
-    }
+    },
 })
 
 export default class App extends Component {
     state = {
-        songIdList: [4151839, 3420341, 1868486, 26199445, 37610440, 509781585, 26199445, 26199445],
+        songIdList: [
+            4151839,
+            3420341,
+            1868486,
+            26199445,
+            37610440,
+            509781585,
+            26199445,
+            26199445,
+        ],
         nowPlayingSong: {},
-        nowPlayingSongIndex: null
+        nowPlayingSongIndex: null,
     }
     componentDidMount = async () => {
         this.setState({
-            songIdList: await getPlaylist(109323387)
+            songIdList: await getPlaylist(109323387),
         })
     }
 
-
-    handlePlayListSelect = (detail) => {
-        this.setState({ nowPlayingSong: detail})
+    handlePlayListSelect = detail => {
+        this.setState({ nowPlayingSong: detail })
     }
     handleAudioEnd = (index, playMode) => {
         const { songIdList } = this.state
         this.setState({
-            nowPlayingSongIndex: getNextSongIndex(index, songIdList.length, playMode)
+            nowPlayingSongIndex: getNextSongIndex(
+                index,
+                songIdList.length,
+                playMode
+            ),
         })
     }
 
@@ -51,13 +63,13 @@ export default class App extends Component {
             <div id="app" className={initStyle}>
                 <MuiThemeProvider theme={theme}>
                     <PlayList
-                      idList={songIdList}
-                      songIndex={nowPlayingSongIndex}
-                      onSelect={this.handlePlayListSelect}
+                        idList={songIdList}
+                        songIndex={nowPlayingSongIndex}
+                        onSelect={this.handlePlayListSelect}
                     />
                     <ControlPanel
-                      songDetail={nowPlayingSong}
-                      onAudioEnd={this.handleAudioEnd}
+                        songDetail={nowPlayingSong}
+                        onAudioEnd={this.handleAudioEnd}
                     />
                 </MuiThemeProvider>
             </div>
@@ -65,19 +77,20 @@ export default class App extends Component {
     }
 }
 
-const getNextSongIndex = curry((clamp, index, length, playMode = 0, opposite = false) => {
-    const max = length - 1
-    if (playMode === 0) {
-        return opposite ? clamp(index - 1, max) : clamp(index + 1, max)
+const getNextSongIndex = curry(
+    (clamp, index, length, playMode = 0, opposite = false) => {
+        const max = length - 1
+        if (playMode === 0) {
+            return opposite ? clamp(index - 1, max) : clamp(index + 1, max)
+        }
+        if (playMode === 1) {
+            return index
+        }
+        if (playMode === 2) {
+            return random(index, max)
+        }
     }
-    if (playMode === 1) {
-        return index
-    }
-    if (playMode === 2) {
-        return random(index, max)
-    }
-
-})(clamp)
+)(clamp)
 
 function clamp(value, max) {
     if (value > max) {

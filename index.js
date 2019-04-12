@@ -7,10 +7,10 @@ const options = {
     scopeHoist: true,
     https: true,
     logLevel: 5,
-    detailedReport: true
-};
+    detailedReport: true,
+}
 
-(async () => {
+;(async () => {
     // eslint-disable-next-line no-unused-vars
     const bundler = new Bundler(entryFiles, options)
 })()

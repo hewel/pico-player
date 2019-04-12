@@ -13,24 +13,21 @@ export default class TableRow extends PureComponent {
                 data: PropTypes.array,
                 rowHeight: PropTypes.number,
             })
-        ).isRequired
+        ).isRequired,
     }
 
     render() {
         const { rowList, className, ...props } = this.props
         return (
             <div
-              className={clsx(className, 'table-row')}
-              css={css`
-                display: flex;
-              `}
-              {...props}
+                className={clsx(className, 'table-row')}
+                css={css`
+                    display: flex;
+                `}
+                {...props}
             >
-                {rowList.map(({ data, rowHeight}, index) => (
-                    <TableCell
-                      key={index}
-                      rowHeight={rowHeight}
-                    >
+                {rowList.map(({ data, rowHeight }, index) => (
+                    <TableCell key={index} rowHeight={rowHeight}>
                         {data}
                     </TableCell>
                 ))}

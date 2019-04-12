@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 export default class Audio extends PureComponent {
-
     audioRef = React.createRef()
 
     // shouldComponentUpdate = () => {
@@ -20,11 +19,18 @@ export default class Audio extends PureComponent {
     }
     //MARK: Component update
     componentDidUpdate = prevProps => {
-        const { songUrl, playCommand, volume, isMuted, onAudioPlay, onAudioEnd } = this.props
-        const [ prevPlayCommand, prevVolume, prevIsMuted ] = [
+        const {
+            songUrl,
+            playCommand,
+            volume,
+            isMuted,
+            onAudioPlay,
+            onAudioEnd,
+        } = this.props
+        const [prevPlayCommand, prevVolume, prevIsMuted] = [
             prevProps.playCommand,
             prevProps.volume,
-            prevProps.isMuted
+            prevProps.isMuted,
         ]
         const audioNode = this.audioRef.current
 
@@ -32,7 +38,10 @@ export default class Audio extends PureComponent {
             if (prevPlayCommand == 'play') {
                 audioNode.play()
                 audioNode.volume = volume / 100
-                this.audioTimer = setInterval(this.refreshAudioTime.bind(this, audioNode), 200)
+                this.audioTimer = setInterval(
+                    this.refreshAudioTime.bind(this, audioNode),
+                    200
+                )
             }
             if (prevPlayCommand == 'pause') {
                 audioNode.pause()
@@ -50,7 +59,7 @@ export default class Audio extends PureComponent {
         clearInterval(this.audioTimer)
     }
     //MARK: Refresh Audio time function
-    refreshAudioTime = (audioNode) => {
+    refreshAudioTime = audioNode => {
         const { onAudioPlay, onAudioEnd } = this.props
         const { currentTime, duration, ended } = audioNode
         if (onAudioPlay) {
@@ -69,12 +78,7 @@ export default class Audio extends PureComponent {
     render() {
         const { songUrl } = this.props
 
-        return (
-            <audio
-              src={songUrl}
-              ref={this.audioRef}
-            />
-        )
+        return <audio src={songUrl} ref={this.audioRef} />
     }
 }
 // MARK: Component propTypes
@@ -85,11 +89,11 @@ Audio.propTypes = {
     isMuted: PropTypes.bool,
     getChangFunc: PropTypes.func,
     onAudioPlay: PropTypes.func,
-    onAudioEnd: PropTypes.func
+    onAudioEnd: PropTypes.func,
 }
 // MARK: Component defaultProps
 Audio.defaultProps = {
     playCommand: 'pause',
     volume: 20,
-    isMuted: false
+    isMuted: false,
 }

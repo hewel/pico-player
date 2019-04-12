@@ -17,10 +17,11 @@ export default class PlayList extends PureComponent {
     componentDidMount = () => {
         const { idList } = this.props
         if (idList) {
-            Promise.all(idList.map(async id => getSongDetail(id)))
-                .then(results => {
-                    this.setState({ songDetailList: results})
-                })
+            Promise.all(idList.map(async id => getSongDetail(id))).then(
+                results => {
+                    this.setState({ songDetailList: results })
+                }
+            )
         }
     }
     componentDidUpdate = (prevProps, prevState) => {
@@ -30,10 +31,11 @@ export default class PlayList extends PureComponent {
             this.setRowSelected(songIndex)
         }
         if (prevIdList !== idList) {
-            Promise.all(idList.map(async id => getSongDetail(id)))
-                .then(results => {
+            Promise.all(idList.map(async id => getSongDetail(id))).then(
+                results => {
                     this.setState({ songDetailList: results })
-                })
+                }
+            )
         }
     }
 
@@ -42,7 +44,7 @@ export default class PlayList extends PureComponent {
         this.setRowSelected(index)
     }
     handlePageChange = (event, page) => {
-        this.setState({page})
+        this.setState({ page })
     }
     setRowSelected = index => {
         const { songDetailList } = this.state
@@ -55,7 +57,7 @@ export default class PlayList extends PureComponent {
                     id,
                     name,
                     albumPic,
-                    artist
+                    artist,
                 })
             }
         })
@@ -64,22 +66,28 @@ export default class PlayList extends PureComponent {
         console.log(column, data)
     }
     render() {
-        const { songDetailList, nowPlayingSongIndex, page, rowsPerPage } = this.state
+        const {
+            songDetailList,
+            nowPlayingSongIndex,
+            page,
+            rowsPerPage,
+        } = this.state
         const columns = [
             { width: 200, dataKey: 'name', label: '歌曲', flexGrow: 2.0 },
             { width: 120, dataKey: 'artist', label: '歌手', flexGrow: 1.0 },
             { width: 120, dataKey: 'albumName', label: '专辑', flexGrow: 1.0 },
-            { width: 120, dataKey: 'duration', label: '时长', isDate: true},
+            { width: 120, dataKey: 'duration', label: '时长', isDate: true },
         ]
-        return(
+        return (
             <Paper square style={{ height: 400, width: '100%' }}>
                 <VirtualizedTable
-                  rowCount={songDetailList.length}
-                  rowGetter={({index}) => songDetailList[index]}
-                  columns={columns}
-                  onRowClick={({index, event}) => this.setRowSelected(index)}
-                >
-                </VirtualizedTable>
+                    rowCount={songDetailList.length}
+                    rowGetter={({ index }) => songDetailList[index]}
+                    columns={columns}
+                    onRowClick={({ index, event }) =>
+                        this.setRowSelected(index)
+                    }
+                />
             </Paper>
         )
     }
@@ -87,31 +95,30 @@ export default class PlayList extends PureComponent {
 PlayList.propTypes = {
     idList: PropTypes.array,
     songIndex: PropTypes.number,
-    onSelect: PropTypes.func
+    onSelect: PropTypes.func,
 }
 
 function getSongDetail(id) {
-    return fetch('/song/detail', { ids: id })
-        .then(res => {
-            const { name, al, ar, dt, publishTime } = res.songs[0]
-            const artists = ar.map(artist => {
-                const { id, name } = artist
-                return { id, name }
-            })
-            return {
-                id,
-                name,
-                albumId: al.id,
-                albumName: al.name,
-                albumPic: al.picUrl,
-                artist: joinArtistNames(artists),
-                duration: dt / 1000,
-                publishTime
-            }
+    return fetch('/song/detail', { ids: id }).then(res => {
+        const { name, al, ar, dt, publishTime } = res.songs[0]
+        const artists = ar.map(artist => {
+            const { id, name } = artist
+            return { id, name }
         })
+        return {
+            id,
+            name,
+            albumId: al.id,
+            albumName: al.name,
+            albumPic: al.picUrl,
+            artist: joinArtistNames(artists),
+            duration: dt / 1000,
+            publishTime,
+        }
+    })
 }
 
-function joinArtistNames(artists=[]) {
+function joinArtistNames(artists = []) {
     if (artists.length === 1) {
         return artists[0].name
     }
@@ -120,6 +127,5 @@ function joinArtistNames(artists=[]) {
 }
 
 function checkSongCanPlay(id) {
-    return fetch('/check/music', { id })
-        .then(res => res.success)
+    return fetch('/check/music', { id }).then(res => res.success)
 }

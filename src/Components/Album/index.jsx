@@ -10,21 +10,17 @@ export default function Album(props) {
     const { className, imageUrl, songName, ...otherProps } = props
     const albumClassName = clsx(className, album)
 
-    return(
+    return (
         <div className={albumClassName} {...otherProps}>
-            <img
-              src={imageUrl}
-              alt={songName}
-              className={albumImg}
-            />
+            <img src={imageUrl} alt={songName} className={albumImg} />
         </div>
     )
 }
 Album.propTypes = {
     imageUrl: PropTypes.string,
-    songName: PropTypes.string
+    songName: PropTypes.string,
 }
 Album.defaultProps = {
     imageUrl: defAlbumImage,
-    songName: '没有歌曲'
+    songName: '没有歌曲',
 }

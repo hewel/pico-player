@@ -42,16 +42,13 @@ export default class ControlPanel extends PureComponent {
     // }
     componentDidUpdate = (prevProps, prevState) => {
         const { songDetail } = this.props
-        const [id, prevId] = [
-            songDetail.id,
-            prevProps.songDetail.id
-        ]
+        const [id, prevId] = [songDetail.id, prevProps.songDetail.id]
         if (id !== prevId) {
-            this.setState({ isPlaying: false})
+            this.setState({ isPlaying: false })
             getSongUrl(id).then(res => {
                 this.setState({
                     isPlaying: true,
-                    songUrl: res
+                    songUrl: res,
                 })
             })
         }
@@ -66,14 +63,14 @@ export default class ControlPanel extends PureComponent {
             if (playMode == 2) {
                 playMode = 0
             } else {
-                playMode ++
+                playMode++
             }
             return { playMode }
         })
     }
     changeVolume = (e, value) => {
         this.setState({
-            volume: value
+            volume: value,
         })
     }
     //MARK: Event functions
@@ -120,7 +117,7 @@ export default class ControlPanel extends PureComponent {
             isPlaying ? 'pause' : 'playarrow',
             isMuted ? 'volumeoff' : getVolumeSymbol(volume),
             getPlayModeSymbol(playMode),
-            isPlaying ? 'pause' : 'play'
+            isPlaying ? 'pause' : 'play',
         ]
 
         // const [currentTime, duration] = [
@@ -130,37 +127,43 @@ export default class ControlPanel extends PureComponent {
 
         return (
             <>
-                <Paper className={clsx(styles.controlPanel, className)} square {...props}>
+                <Paper
+                    className={clsx(styles.controlPanel, className)}
+                    square
+                    {...props}
+                >
                     <Progress
-                      className={styles.progress}
-                      currentTime={audioCurrentTime}
-                      duration={audioDuration}
-                      onChange={this.handleProgressChange}
+                        className={styles.progress}
+                        currentTime={audioCurrentTime}
+                        duration={audioDuration}
+                        onChange={this.handleProgressChange}
                     />
                     <Grid container spacing={32} className={styles.inner}>
                         <Grid item xs={2}>
                             <Album
-                              className={styles.albumCell}
-                              imageUrl={albumPic}
-                              songName={name}
+                                className={styles.albumCell}
+                                imageUrl={albumPic}
+                                songName={name}
                             />
                         </Grid>
                         <Grid item xs={3} className={styles.songInfo}>
-                            <span className={styles.songName}>
-                                {name}
-                            </span>
+                            <span className={styles.songName}>{name}</span>
                             <span className={styles.songSinger}>{artist}</span>
                         </Grid>
                         <Grid item xs={3} className={styles.controlButtonGroup}>
-                            <Button color="primary"><Icon symbol="skipprevious" /></Button>
+                            <Button color="primary">
+                                <Icon symbol="skipprevious" />
+                            </Button>
                             <Button
-                              color="primary"
-                              variant="contained"
-                              onClick={this.changePlayState}
+                                color="primary"
+                                variant="contained"
+                                onClick={this.changePlayState}
                             >
                                 <Icon symbol={playButtonSymbol} />
                             </Button>
-                            <Button color="primary"><Icon symbol="skipnext" /></Button>
+                            <Button color="primary">
+                                <Icon symbol="skipnext" />
+                            </Button>
                         </Grid>
                         <Grid item xs={4} className={styles.tuning}>
                             {/* <div className={styles.time}>
@@ -168,34 +171,39 @@ export default class ControlPanel extends PureComponent {
                                 <span>{duration}</span>
                             </div> */}
                             <Icon
-                              className={styles.tuningIcon}
-                              symbol={playModeSymbol}
-                              onClick={this.changePlayMode}
+                                className={styles.tuningIcon}
+                                symbol={playModeSymbol}
+                                onClick={this.changePlayMode}
                             />
                             <div className={styles.volumeControl}>
                                 <Icon
-                                  className={`${styles.tuningIcon} ${styles.volumeIcon}`}
-                                  symbol={volumeSymbol}
-                                  onClick={this.muteVolume}
+                                    className={`${styles.tuningIcon} ${
+                                        styles.volumeIcon
+                                    }`}
+                                    symbol={volumeSymbol}
+                                    onClick={this.muteVolume}
                                 />
                                 <Slider
-                                  value={volume}
-                                  disabled={isMuted}
-                                  onChange={this.changeVolume}
+                                    value={volume}
+                                    disabled={isMuted}
+                                    onChange={this.changeVolume}
                                 />
                             </div>
-                            <Icon className={styles.tuningIcon} symbol="queuemusic" />
+                            <Icon
+                                className={styles.tuningIcon}
+                                symbol="queuemusic"
+                            />
                         </Grid>
                     </Grid>
                 </Paper>
                 <Audio
-                  songUrl={songUrl}
-                  playCommand={playCommand}
-                  volume={volume}
-                  isMuted={isMuted}
-                  onAudioPlay={this.handleAudioPlay}
-                  onAudioEnd={this.handleAudioEnd}
-                  getChangFunc={this.handelGetChangeFunc}
+                    songUrl={songUrl}
+                    playCommand={playCommand}
+                    volume={volume}
+                    isMuted={isMuted}
+                    onAudioPlay={this.handleAudioPlay}
+                    onAudioEnd={this.handleAudioEnd}
+                    getChangFunc={this.handelGetChangeFunc}
                 />
             </>
         )
@@ -204,7 +212,7 @@ export default class ControlPanel extends PureComponent {
 // MARK: Component propTypes
 ControlPanel.propTypes = {
     songDetail: PropTypes.object.isRequired,
-    onAudioEnd: PropTypes.func
+    onAudioEnd: PropTypes.func,
 }
 
 function getVolumeSymbol(value = 0) {
@@ -222,6 +230,5 @@ function getPlayModeSymbol(value = 0) {
 }
 
 function getSongUrl(id) {
-    return fetch('/song/url', {id})
-        .then(response => response.data[0].url)
+    return fetch('/song/url', { id }).then(response => response.data[0].url)
 }

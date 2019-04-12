@@ -31,32 +31,31 @@ const styles = theme => ({
     },
 })
 
-const ReTableCell = ({ rowHeight, children, ...other}) => (
+const ReTableCell = ({ rowHeight, children, ...other }) => (
     <TableCell
-      component="div"
-      css={css`
-        display: flex;
-        align-items: center;
-        flex: 1;
-        height: ${rowHeight}px;
-      `}
-      {...other}
+        component="div"
+        css={css`
+            display: flex;
+            align-items: center;
+            flex: 1;
+            height: ${rowHeight}px;
+        `}
+        {...other}
     >
         {children}
     </TableCell>
 )
 ReTableCell.propTypes = {
-    rowHeight: PropTypes.number
+    rowHeight: PropTypes.number,
 }
 
 class VirtualizedTable extends PureComponent {
-
     getRowClassName = () => {
         const { classes, rowClassName } = this.props
         return clsx(classes.tableRow, classes.flexContainer, rowClassName)
     }
 
-    checkCellIsDate = (index) => {
+    checkCellIsDate = index => {
         const { columns } = this.props
         return columns[index].isDate || false
     }
@@ -67,9 +66,9 @@ class VirtualizedTable extends PureComponent {
         const inner = isDate ? format(cellData) : cellData
         return (
             <ReTableCell
-              variant="body"
-              rowHeight={rowHeight}
-              align={isDate ? 'right' : 'left'}
+                variant="body"
+                rowHeight={rowHeight}
+                align={isDate ? 'right' : 'left'}
             >
                 {inner}
             </ReTableCell>
@@ -80,9 +79,9 @@ class VirtualizedTable extends PureComponent {
         const isDate = this.checkCellIsDate(columnIndex)
         return (
             <ReTableCell
-              variant="head"
-              rowHeight={headerHeight}
-              align={isDate ? 'right' : 'left'}
+                variant="head"
+                rowHeight={headerHeight}
+                align={isDate ? 'right' : 'left'}
             >
                 {label}
             </ReTableCell>
@@ -90,33 +89,34 @@ class VirtualizedTable extends PureComponent {
     }
     render() {
         const { columns, ...props } = this.props
-        return(
+        return (
             <AutoSizer>
-                {({height, width}) => (
+                {({ height, width }) => (
                     <Table
-                      height={height}
-                      width={width}
-                      rowClassName={this.getRowClassName}
-                    //   css={css`
-                    //     display: flex;
-                    //     align-items: center;
-                    //     box-sizing: border-box;
-                    //   `}
-                      {...props}
+                        height={height}
+                        width={width}
+                        rowClassName={this.getRowClassName}
+                        //   css={css`
+                        //     display: flex;
+                        //     align-items: center;
+                        //     box-sizing: border-box;
+                        //   `}
+                        {...props}
                     >
                         {columns.map((item, index) => {
                             const { dataKey, ...other } = item
-                            const headerRenderer = ({ label }) => this.headerRender({
-                                label,
-                                columnIndex: index
-                            })
+                            const headerRenderer = ({ label }) =>
+                                this.headerRender({
+                                    label,
+                                    columnIndex: index,
+                                })
                             return (
                                 <Column
-                                  key={dataKey}
-                                  dataKey={dataKey}
-                                  headerRenderer={headerRenderer}
-                                  cellRenderer={this.cellRender}
-                                  {...other}
+                                    key={dataKey}
+                                    dataKey={dataKey}
+                                    headerRenderer={headerRenderer}
+                                    cellRenderer={this.cellRender}
+                                    {...other}
                                 />
                             )
                         })}
@@ -140,6 +140,6 @@ VirtualizedTable.propTypes = {
 }
 VirtualizedTable.defaultProps = {
     headerHeight: 56,
-    rowHeight: 48
+    rowHeight: 48,
 }
 export default withStyles(styles)(VirtualizedTable)

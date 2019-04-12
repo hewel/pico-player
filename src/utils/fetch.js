@@ -7,8 +7,8 @@ const fetch = (url, params) => {
         url: musicApi + url,
         params,
         xhrFields: {
-            withCredentials: true
-        }
+            withCredentials: true,
+        },
     })
         .then(response => response.data)
         .catch(error => {

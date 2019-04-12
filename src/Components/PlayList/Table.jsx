@@ -10,16 +10,18 @@ import clsx from 'clsx'
 
 export default class Table extends PureComponent {
     static propTypes = {
-        columns: PropTypes.arrayOf(PropTypes.shape({
-            dataKey: PropTypes.string,
-            label: PropTypes.string,
-        })).isRequired,
+        columns: PropTypes.arrayOf(
+            PropTypes.shape({
+                dataKey: PropTypes.string,
+                label: PropTypes.string,
+            })
+        ).isRequired,
         rowCount: PropTypes.number.isRequired,
         rowGetter: PropTypes.func.isRequired,
     }
 
     state = {
-        rowList: []
+        rowList: [],
     }
 
     componentDidMount() {
@@ -40,7 +42,6 @@ export default class Table extends PureComponent {
         }
     }
 
-
     _getRowList = (rowCount, rowGetter) => {
         const rowList = []
         for (let index = 0; index < rowCount; index++) {
@@ -57,13 +58,6 @@ export default class Table extends PureComponent {
 
         const rowListRender = this._getRowList().map()
 
-        return (
-            <div
-              className={classNames}
-              {...props}
-            >
-
-            </div>
-        )
+        return <div className={classNames} {...props} />
     }
 }
