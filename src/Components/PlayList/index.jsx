@@ -3,9 +3,15 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 import Paper from '@material-ui/core/Paper'
-import VirtualizedTable from './VirtualizedTable'
+// import VirtualizedTable from './VirtualizedTable'
+import Table from './Table'
+
+import { css } from '@emotion/core'
 
 import fetch from 'utils/fetch'
+import format from 'utils/format'
+
+import styles from './style.sass'
 
 export default class PlayList extends PureComponent {
     state = {
@@ -13,15 +19,12 @@ export default class PlayList extends PureComponent {
         nowPlayingSongIndex: null,
         page: 0,
         rowsPerPage: 8,
+        isFetched: false,
     }
     componentDidMount = () => {
         const { idList } = this.props
         if (idList) {
-            Promise.all(idList.map(async id => getSongDetail(id))).then(
-                results => {
-                    this.setState({ songDetailList: results })
-                }
-            )
+            this.fetchSongList()
         }
     }
     componentDidUpdate = (prevProps, prevState) => {
@@ -31,21 +34,24 @@ export default class PlayList extends PureComponent {
             this.setRowSelected(songIndex)
         }
         if (prevIdList !== idList) {
-            Promise.all(idList.map(async id => getSongDetail(id))).then(
-                results => {
-                    this.setState({ songDetailList: results })
-                }
-            )
+            this.fetchSongList()
         }
     }
 
-    handleRowDoubleClick = (index, event) => {
-        event.preventDefault()
+    fetchSongList = async () => {
+        const { idList } = this.props
+        this.setState({ isFetched: false })
+        const results = await Promise.all(
+            idList.map(async id => getSongDetail(id))
+        )
+        this.setState({ songDetailList: results, isFetched: true })
+        return true
+    }
+
+    handleOnRowSelect = (index, event) => {
         this.setRowSelected(index)
     }
-    handlePageChange = (event, page) => {
-        this.setState({ page })
-    }
+
     setRowSelected = index => {
         const { songDetailList } = this.state
         const { onSelect } = this.props
@@ -66,27 +72,28 @@ export default class PlayList extends PureComponent {
         console.log(column, data)
     }
     render() {
-        const {
-            songDetailList,
-            nowPlayingSongIndex,
-            page,
-            rowsPerPage,
-        } = this.state
+        const { songDetailList, nowPlayingSongIndex, isFetched } = this.state
         const columns = [
-            { width: 200, dataKey: 'name', label: '歌曲', flexGrow: 2.0 },
-            { width: 120, dataKey: 'artist', label: '歌手', flexGrow: 1.0 },
-            { width: 120, dataKey: 'albumName', label: '专辑', flexGrow: 1.0 },
-            { width: 120, dataKey: 'duration', label: '时长', isDate: true },
+            { width: 200, dataKey: 'name', label: '歌曲' },
+            { width: 120, dataKey: 'artist', label: '歌手' },
+            { width: 120, dataKey: 'albumName', label: '专辑' },
+            { width: 120, dataKey: 'duration', label: '时长', align: 'right' },
         ]
         return (
-            <Paper square style={{ height: 400, width: '100%' }}>
-                <VirtualizedTable
-                    rowCount={songDetailList.length}
-                    rowGetter={({ index }) => songDetailList[index]}
+            <Paper
+                square
+                className={styles.playList}
+                css={css`
+                    width: 736px;
+                    height: 368px;
+                `}
+            >
+                <Table
                     columns={columns}
-                    onRowClick={({ index, event }) =>
-                        this.setRowSelected(index)
-                    }
+                    dataList={songDetailList}
+                    isFetched={isFetched}
+                    onRowSelect={this.handleOnRowSelect}
+                    selectedRowIndex={nowPlayingSongIndex}
                 />
             </Paper>
         )
@@ -112,7 +119,7 @@ function getSongDetail(id) {
             albumName: al.name,
             albumPic: al.picUrl,
             artist: joinArtistNames(artists),
-            duration: dt / 1000,
+            duration: format(dt / 1000),
             publishTime,
         }
     })

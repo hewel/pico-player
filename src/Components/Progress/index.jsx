@@ -111,15 +111,16 @@ class Progress extends PureComponent {
                     onClick={isEnd ? null : this.handleProgressClick}
                     classes={progressClasses}
                 />
-                <Global
+                {/* <Global
                     styles={{
                         '.thumb-move': thumbStyle,
                     }}
-                />
+                /> */}
                 <div
                     className={clsx(styles.thumb, 'thumb-move')}
                     onMouseDown={isEnd ? null : this.handleThumbMouseDown}
                     is-mouse-down={isThumbMouseDown.toString()}
+                    style={thumbStyle}
                 >
                     <Chip
                         className={styles.chip}

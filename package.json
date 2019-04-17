@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "parcel ./src/index.html -p 5400 --open",
-    "build": "parcel build ./src/index.html",
+    "build": "parcel build ./src/index.html --no-source-maps",
     "commit": "git add . && git cz",
     "lint": "eslint --cache ./src/**",
     "lint:fix": "eslint --fix --cache ./src/**"
@@ -25,6 +25,7 @@
     "cz-conventional-changelog": "2.1.0",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-emotion": "^10.0.7",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.4",
@@ -47,7 +48,9 @@
     "ramda": "^0.26.1",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
-    "react-virtualized": "^9.21.0"
+    "react-virtualized": "^9.21.0",
+    "react-virtualized-auto-sizer": "^1.0.2",
+    "react-window": "^1.8.1"
   },
   "alias": {
     "assets": "./src/assets/",

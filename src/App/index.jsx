@@ -102,7 +102,7 @@ function clamp(value, max) {
     return value
 }
 function random(value, max) {
-    const randomNum = parseInt(Math.random() * max)
+    const randomNum = Math.floor(Math.random() * max)
     if (value === randomNum) {
         return random(value, max)
     }

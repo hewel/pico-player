@@ -20,7 +20,7 @@ module.exports = {
         sourceType: 'module',
     },
     parser: 'babel-eslint',
-    plugins: ['react', 'import', 'react-hooks', 'prettier'],
+    plugins: ['react', 'import', 'react-hooks', 'prettier', 'emotion'],
     settings: {
         react: {
             pragma: 'React',

@@ -1,7 +1,5 @@
 {
   "trailingComma": "es5",
-  "tabWidth": 4,
   "semi": false,
-  "singleQuote": true,
-  "disableLanguages": ["react"]
+  "singleQuote": true
 }

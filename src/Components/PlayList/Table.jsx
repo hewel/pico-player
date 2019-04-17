@@ -3,9 +3,11 @@ import PropTypes from 'prop-types'
 
 import TableHead from './TableHead'
 import TableRow from './TableRow'
+import { FixedSizeList as List } from 'react-window'
+import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { css } from '@emotion/core'
-import { equals, difference } from 'ramda'
+import { equals } from 'ramda'
 import clsx from 'clsx'
 
 export default class Table extends PureComponent {
@@ -16,48 +18,137 @@ export default class Table extends PureComponent {
                 label: PropTypes.string,
             })
         ).isRequired,
-        rowCount: PropTypes.number.isRequired,
-        rowGetter: PropTypes.func.isRequired,
+        dataList: PropTypes.arrayOf(PropTypes.object).isRequired,
+        isFetched: PropTypes.bool.isRequired,
+        onRowSelect: PropTypes.func,
+        selectedRowIndex: PropTypes.number,
     }
 
     state = {
-        rowList: [],
+        columnList: null,
+    }
+    listRef = React.createRef()
+
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     if (nextProps.isFetched) {
+    //         return true
+    //     }
+    //     return false
+    // }
+
+    componentDidUpdate(prevProps, prevState) {
+        const { columnList: prevColumnList } = prevState
+        const { columns, dataList, isFetched, selectedRowIndex } = this.props
+
+        if (isFetched !== prevProps.isFetched && isFetched) {
+            const updatedColumnList = this.getColumnList(columns, dataList)
+            const isEqualed = equals(prevColumnList, updatedColumnList)
+            if (!isEqualed) {
+                this.setState({
+                    columnList: updatedColumnList,
+                })
+            }
+        }
+        this.listRef.current.scrollToItem(selectedRowIndex, 'smart')
     }
 
-    componentDidMount() {
-        const { rowCount, rowGetter } = this.props
-        this.setState({
-            rowList: this._getRowList(rowCount, rowGetter),
+    handleOnRowDbClick = (index, event) => {
+        const { onRowSelect } = this.props
+        event.preventDefault()
+        if (onRowSelect) {
+            onRowSelect(index, event)
+        }
+    }
+
+    getHeadList = columns => columns.map(column => column.label)
+
+    getColumnList = (columns, dataList) => {
+        return dataList.map(data => {
+            return columns.map(column => data[column.dataKey])
         })
     }
-    componentDidUpdate(prevState) {
-        const { rowCount, rowGetter } = this.props
-        const { rowList: prevRowList } = prevState
-        const rowList = this._getRowList(rowCount, rowGetter)
+    getBackgroundColor = index => {
+        const { selectedRowIndex } = this.props
 
-        if (!equals(prevRowList, rowList)) {
-            this.setState({
-                rowList: [...difference(prevRowList, rowList), ...rowList],
-            })
+        if (selectedRowIndex) {
+            return index === selectedRowIndex
+                ? '#e0e0e0'
+                : index % 2 !== 0 && '#f4f4f4'
         }
+        return index % 2 !== 0 && '#f4f4f4'
     }
 
-    _getRowList = (rowCount, rowGetter) => {
-        const rowList = []
-        for (let index = 0; index < rowCount; index++) {
-            const row = rowGetter(index)
-            rowList.push(row)
+    cellRender = (columnList, { index, style }) => {
+        if (columnList) {
+            const cellList = columnList ? columnList[index] : []
+            const backgroundColor = this.getBackgroundColor(index) || ''
+            const cssString = css`
+                position: absolute;
+                left: 0;
+                width: 100%;
+                background-color: ${backgroundColor};
+            `
+            return (
+                <TableRow
+                    css={cssString}
+                    cellList={cellList || []}
+                    height={style.height}
+                    style={{ top: style.top }}
+                    onDoubleClick={this.handleOnRowDbClick.bind(this, index)}
+                />
+            )
         }
-        return rowList
+        return null
     }
 
     render() {
-        const { className, columns, ...props } = this.props
+        const { className, columns, dataList, ...props } = this.props
+        const { columnList } = this.state
 
         const classNames = clsx(className, 'table')
 
-        const rowListRender = this._getRowList().map()
+        const itemCount = dataList.length
+        const headHeight = 48
 
-        return <div className={classNames} {...props} />
+        return (
+            <AutoSizer>
+                {({ height, width }) => (
+                    <>
+                        <TableHead
+                            headList={this.getHeadList(columns)}
+                            headHeight={headHeight}
+                            width={width}
+                        />
+                        <List
+                            className={classNames}
+                            itemCount={itemCount}
+                            ref={this.listRef}
+                            height={height - headHeight}
+                            width={width}
+                            itemSize={32}
+                            css={css`
+                                &::-webkit-scrollbar {
+                                    width: 10px;
+                                    background-color: #e0e0e0;
+                                }
+                                &::-webkit-scrollbar-thumb {
+                                    background-color: #9e9e9e;
+                                    &:hover {
+                                        background-color: #757575;
+                                    }
+                                }
+                                &::-webkit-scrollbar-thumb,
+                                &::-webkit-scrollbar-corner {
+                                    border-radius: 5px;
+                                }
+                            `}
+                            {...props}
+                        >
+                            {this.cellRender.bind(this, columnList)}
+                        </List>
+                    </>
+                )}
+            </AutoSizer>
+        )
     }
 }
