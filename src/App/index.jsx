@@ -82,16 +82,14 @@ export default class App extends Component {
             shouldPlayListShow,
         } = this.state
 
-        const playListClassName = clsx()
-
         return (
             <div id="app" className={initStyle}>
                 <MuiThemeProvider theme={theme}>
                     <PlayList
-                        className={shouldPlayListShow && 'show'}
                         idList={uniq(songIdList)}
                         songIndex={nowPlayingSongIndex}
                         onSelect={this.handlePlayListSelect}
+                        shouldPlayListShow={shouldPlayListShow}
                     />
                     <ControlPanel
                         songDetail={nowPlayingSong}

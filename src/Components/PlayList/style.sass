@@ -1,6 +1,16 @@
 @import '../../sass/variables'
 @import '../../sass/mixins'
 
+$easeInSine: cubic-bezier(0.470, 0.000, 0.745, 0.715)
+
 .playList
   +centerByAbsolute($container-width)
+  width: $container-width
   bottom: 150px
+  height: 368px
+  animation-fill-mode: both
+  animation-timing-function: $easeInSine
+.tableRow
+  position: absolute
+  left: 0
+  width: 100%

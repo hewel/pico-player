@@ -13,6 +13,37 @@ import fetch from 'utils/fetch'
 import format from 'utils/format'
 
 import styles from './style.sass'
+const ANIMATE_DURATION = 400
+const fadeInBottom = keyframes`
+    0% {
+        transform: translate3d(0,400px,0);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.2;
+    }
+    80%, 100% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate3d(0,0,0);
+    }
+`
+const fadeOutBottom = keyframes`
+    0% {
+        transform: translate3d(0,0,0);
+        opacity: 1;
+    }
+    20% {
+        opacity: 0.2;
+    }
+    50%, 100% {
+        opacity: 0;
+    }
+    100% {
+        transform: translate3d(0,400px,0);
+    }
+`
 
 export default class PlayList extends PureComponent {
     state = {
@@ -20,7 +51,9 @@ export default class PlayList extends PureComponent {
         page: 0,
         rowsPerPage: 8,
         isFetched: false,
+        isPlayListShow: false,
     }
+
     componentDidMount = () => {
         const { idList } = this.props
         if (idList) {
@@ -28,14 +61,39 @@ export default class PlayList extends PureComponent {
         }
     }
     componentDidUpdate = (prevProps, prevState) => {
-        const { songIndex: prevSongIndex, idList: prevIdList } = prevProps
-        const { songIndex, idList } = this.props
+        const {
+            songIndex: prevSongIndex,
+            idList: prevIdList,
+            shouldPlayListShow: prevShouldPlayListShow,
+        } = prevProps
+        const { songIndex, idList, shouldPlayListShow } = this.props
         if (prevSongIndex !== songIndex) {
             this.setRowSelected(songIndex)
         }
         if (prevIdList !== idList) {
             this.fetchSongList()
         }
+        if (prevShouldPlayListShow !== shouldPlayListShow) {
+            if (!shouldPlayListShow) {
+                this.timer = setTimeout(() => {
+                    this.setState(
+                        {
+                            isPlayListShow: shouldPlayListShow,
+                        },
+                        () => {
+                            clearTimeout(this.timer)
+                        }
+                    )
+                }, ANIMATE_DURATION)
+            } else {
+                this.setState({
+                    isPlayListShow: shouldPlayListShow,
+                })
+            }
+        }
+    }
+    componentWillUnmount() {
+        clearTimeout(this.timer)
     }
 
     fetchSongList = async () => {
@@ -63,12 +121,10 @@ export default class PlayList extends PureComponent {
             })
         }
     }
-    demoEventFunc = (column, data) => {
-        console.log(column, data)
-    }
+
     render() {
-        const { songDetailList, isFetched } = this.state
-        const { className, songIndex } = this.props
+        const { songDetailList, isFetched, isPlayListShow } = this.state
+        const { className, songIndex, shouldPlayListShow } = this.props
         const columns = [
             { width: 200, dataKey: 'name', label: '歌曲' },
             { width: 120, dataKey: 'artist', label: '歌手' },
@@ -76,13 +132,16 @@ export default class PlayList extends PureComponent {
             { width: 120, dataKey: 'duration', label: '时长', align: 'right' },
         ]
         const classNames = clsx(className, styles.playList)
+        const animation = shouldPlayListShow ? fadeInBottom : fadeOutBottom
+        const visibility = isPlayListShow ? 'visible' : 'hidden'
         return (
             <Paper
                 square
                 className={classNames}
                 css={css`
-                    width: 736px;
-                    height: 368px;
+                    visibility: ${visibility};
+                    animation-duration: ${ANIMATE_DURATION}ms;
+                    animation-name: ${animation};
                 `}
             >
                 <Table
@@ -100,6 +159,7 @@ PlayList.propTypes = {
     idList: PropTypes.array,
     songIndex: PropTypes.number,
     onSelect: PropTypes.func,
+    shouldPlayListShow: PropTypes.bool,
 }
 
 function getSongDetail(ids) {

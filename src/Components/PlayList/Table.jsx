@@ -49,7 +49,7 @@ export default class Table extends PureComponent {
                 })
             }
         }
-        this.listRef.current.scrollToItem(selectedRowIndex)
+        this.listRef.current.scrollToItem(selectedRowIndex, 'smart')
     }
 
     handleOnRowDbClick = (index, event) => {
