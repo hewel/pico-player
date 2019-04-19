@@ -6,7 +6,8 @@ import blue from '@material-ui/core/colors/blue'
 import PlayList from '../Components/PlayList'
 import ControlPanel from '../Components/ControlPanel'
 
-import { curry } from 'ramda'
+import { uniq, curry } from 'ramda'
+import clsx from 'clsx'
 
 import fetch from 'utils/fetch'
 
@@ -36,6 +37,7 @@ export default class App extends Component {
         ],
         nowPlayingSong: {},
         nowPlayingSongIndex: null,
+        shouldPlayListShow: false,
     }
     componentDidMount = async () => {
         this.setState({
@@ -43,33 +45,59 @@ export default class App extends Component {
         })
     }
 
-    handlePlayListSelect = detail => {
-        this.setState({ nowPlayingSong: detail })
+    handlePlayListSelect = (index, detail) => {
+        this.setState({ nowPlayingSongIndex: index, nowPlayingSong: detail })
     }
-    handleAudioEnd = (index, playMode) => {
-        const { songIdList } = this.state
+    handleSongSkip = (playMode, opposite) => {
+        const { songIdList, nowPlayingSongIndex } = this.state
         this.setState({
             nowPlayingSongIndex: getNextSongIndex(
-                index,
+                nowPlayingSongIndex,
+                songIdList.length,
+                playMode,
+                opposite
+            ),
+        })
+    }
+    handleAudioEnd = playMode => {
+        const { songIdList, nowPlayingSongIndex } = this.state
+        this.setState({
+            nowPlayingSongIndex: getNextSongIndex(
+                nowPlayingSongIndex,
                 songIdList.length,
                 playMode
             ),
         })
     }
-
+    handleListShow = () => {
+        this.setState(({ shouldPlayListShow }) => ({
+            shouldPlayListShow: !shouldPlayListShow,
+        }))
+    }
     render() {
-        const { songIdList, nowPlayingSong, nowPlayingSongIndex } = this.state
+        const {
+            songIdList,
+            nowPlayingSong,
+            nowPlayingSongIndex,
+            shouldPlayListShow,
+        } = this.state
+
+        const playListClassName = clsx()
+
         return (
             <div id="app" className={initStyle}>
                 <MuiThemeProvider theme={theme}>
                     <PlayList
-                        idList={songIdList}
+                        className={shouldPlayListShow && 'show'}
+                        idList={uniq(songIdList)}
                         songIndex={nowPlayingSongIndex}
                         onSelect={this.handlePlayListSelect}
                     />
                     <ControlPanel
                         songDetail={nowPlayingSong}
+                        onSongSkip={this.handleSongSkip}
                         onAudioEnd={this.handleAudioEnd}
+                        onListShow={this.handleListShow}
                     />
                 </MuiThemeProvider>
             </div>
@@ -112,6 +140,7 @@ function random(value, max) {
 function getPlaylist(id) {
     return fetch('/playlist/detail', { id }).then(res => {
         const tracks = res.playlist.tracks
-        return tracks.map(item => item.id)
+        const idList = tracks.map(track => track.id)
+        return idList
     })
 }

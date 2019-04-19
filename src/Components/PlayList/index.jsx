@@ -6,7 +6,8 @@ import Paper from '@material-ui/core/Paper'
 // import VirtualizedTable from './VirtualizedTable'
 import Table from './Table'
 
-import { css } from '@emotion/core'
+import { css, keyframes } from '@emotion/core'
+import clsx from 'clsx'
 
 import fetch from 'utils/fetch'
 import format from 'utils/format'
@@ -16,7 +17,6 @@ import styles from './style.sass'
 export default class PlayList extends PureComponent {
     state = {
         songDetailList: [],
-        nowPlayingSongIndex: null,
         page: 0,
         rowsPerPage: 8,
         isFetched: false,
@@ -41,9 +41,7 @@ export default class PlayList extends PureComponent {
     fetchSongList = async () => {
         const { idList } = this.props
         this.setState({ isFetched: false })
-        const results = await Promise.all(
-            idList.map(async id => getSongDetail(id))
-        )
+        const results = await getSongDetail(idList.join(','))
         this.setState({ songDetailList: results, isFetched: true })
         return true
     }
@@ -55,34 +53,33 @@ export default class PlayList extends PureComponent {
     setRowSelected = index => {
         const { songDetailList } = this.state
         const { onSelect } = this.props
-        this.setState({ nowPlayingSongIndex: index }, () => {
-            if (onSelect) {
-                const { id, name, artist, albumPic } = songDetailList[index]
-                onSelect({
-                    index,
-                    id,
-                    name,
-                    albumPic,
-                    artist,
-                })
-            }
-        })
+        if (onSelect) {
+            const { id, name, artist, albumPic } = songDetailList[index]
+            onSelect(index, {
+                id,
+                name,
+                albumPic,
+                artist,
+            })
+        }
     }
     demoEventFunc = (column, data) => {
         console.log(column, data)
     }
     render() {
-        const { songDetailList, nowPlayingSongIndex, isFetched } = this.state
+        const { songDetailList, isFetched } = this.state
+        const { className, songIndex } = this.props
         const columns = [
             { width: 200, dataKey: 'name', label: '歌曲' },
             { width: 120, dataKey: 'artist', label: '歌手' },
             { width: 120, dataKey: 'albumName', label: '专辑' },
             { width: 120, dataKey: 'duration', label: '时长', align: 'right' },
         ]
+        const classNames = clsx(className, styles.playList)
         return (
             <Paper
                 square
-                className={styles.playList}
+                className={classNames}
                 css={css`
                     width: 736px;
                     height: 368px;
@@ -93,7 +90,7 @@ export default class PlayList extends PureComponent {
                     dataList={songDetailList}
                     isFetched={isFetched}
                     onRowSelect={this.handleOnRowSelect}
-                    selectedRowIndex={nowPlayingSongIndex}
+                    selectedRowIndex={songIndex}
                 />
             </Paper>
         )
@@ -105,23 +102,25 @@ PlayList.propTypes = {
     onSelect: PropTypes.func,
 }
 
-function getSongDetail(id) {
-    return fetch('/song/detail', { ids: id }).then(res => {
-        const { name, al, ar, dt, publishTime } = res.songs[0]
-        const artists = ar.map(artist => {
-            const { id, name } = artist
-            return { id, name }
+function getSongDetail(ids) {
+    return fetch('/song/detail', { ids: ids }).then(res => {
+        return res.songs.map((song, index) => {
+            const { id, name, al, ar, dt, publishTime } = song
+            const artists = ar.map(artist => {
+                const { id, name } = artist
+                return { id, name }
+            })
+            return {
+                id,
+                name,
+                albumId: al.id,
+                albumName: al.name,
+                albumPic: al.picUrl,
+                artist: joinArtistNames(artists),
+                duration: format(dt / 1000),
+                publishTime,
+            }
         })
-        return {
-            id,
-            name,
-            albumId: al.id,
-            albumName: al.name,
-            albumPic: al.picUrl,
-            artist: joinArtistNames(artists),
-            duration: format(dt / 1000),
-            publishTime,
-        }
     })
 }
 
@@ -131,8 +130,4 @@ function joinArtistNames(artists = []) {
     }
     const artistNames = artists.map(artist => artist.name)
     return artistNames.join(' & ')
-}
-
-function checkSongCanPlay(id) {
-    return fetch('/check/music', { id }).then(res => res.success)
 }

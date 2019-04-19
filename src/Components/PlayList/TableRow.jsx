@@ -31,11 +31,13 @@ export default class TableRow extends PureComponent {
                 {...props}
             >
                 {cellList.map((cell, index) => {
-                    const align = index !== 0 ? 'right' : 'left'
+                    const isTheFirst = index === 0
+                    const align = isTheFirst ? 'left' : 'right'
+                    const placement = isTheFirst ? 'bottom' : 'bottom-end'
                     const isTheLast = index === cellList.length - 1
                     const flex = isTheLast ? '' : '4'
 
-                    const tabCell = (
+                    const tabCell = index => (
                         <TableCell
                             key={index}
                             rowHeight={height}
@@ -49,11 +51,18 @@ export default class TableRow extends PureComponent {
                     )
 
                     if (isTheLast) {
-                        return tabCell
+                        return tabCell(index)
                     } else {
                         return (
-                            <Tooltip title={cell} enterDelay={500} interactive>
-                                {tabCell}
+                            <Tooltip
+                                title={cell}
+                                key={index}
+                                placement={placement}
+                                enterDelay={500}
+                                leaveDelay={100}
+                                interactive
+                            >
+                                {tabCell(null)}
                             </Tooltip>
                         )
                     }
