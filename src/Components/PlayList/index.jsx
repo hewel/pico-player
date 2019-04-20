@@ -8,6 +8,7 @@ import Table from './Table'
 
 import { css, keyframes } from '@emotion/core'
 import clsx from 'clsx'
+import localforage from 'localforage'
 
 import fetch from 'utils/fetch'
 import format from 'utils/format'
@@ -57,7 +58,13 @@ export default class PlayList extends PureComponent {
     componentDidMount = () => {
         const { idList } = this.props
         if (idList) {
-            this.fetchSongList()
+            localforage.getItem('songList').then(res => {
+                if (res) {
+                    this.setState({ songDetailList: res })
+                } else {
+                    this.fetchSongList()
+                }
+            })
         }
     }
     componentDidUpdate = (prevProps, prevState) => {
@@ -100,6 +107,7 @@ export default class PlayList extends PureComponent {
         const { idList } = this.props
         this.setState({ isFetched: false })
         const results = await getSongDetail(idList.join(','))
+        localforage.setItem('songList', results)
         this.setState({ songDetailList: results, isFetched: true })
         return true
     }

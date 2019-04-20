@@ -42,6 +42,7 @@
     "@material-ui/lab": "^3.0.0-alpha.30",
     "axios": "^0.18.0",
     "clsx": "^1.0.3",
+    "localforage": "^1.7.3",
     "prop-types": "^15.7.2",
     "ramda": "^0.26.1",
     "react": "^16.8.5",

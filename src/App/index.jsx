@@ -7,7 +7,8 @@ import PlayList from '../Components/PlayList'
 import ControlPanel from '../Components/ControlPanel'
 
 import { uniq, curry } from 'ramda'
-import clsx from 'clsx'
+// import clsx from 'clsx'
+import localforage from 'localforage'
 
 import fetch from 'utils/fetch'
 
@@ -40,13 +41,17 @@ export default class App extends Component {
         shouldPlayListShow: false,
     }
     componentDidMount = async () => {
+        const songDetail = await localforage.getItem('songDetail')
         this.setState({
             songIdList: await getPlaylist(109323387),
+            nowPlayingSongIndex: songDetail.index,
+            nowPlayingSong: songDetail.detail,
         })
     }
 
     handlePlayListSelect = (index, detail) => {
         this.setState({ nowPlayingSongIndex: index, nowPlayingSong: detail })
+        localforage.setItem('songDetail', { index, detail })
     }
     handleSongSkip = (playMode, opposite) => {
         const { songIdList, nowPlayingSongIndex } = this.state
