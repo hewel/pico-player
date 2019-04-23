@@ -32,18 +32,6 @@ export default class ControlPanel extends PureComponent {
         snackbarMessage: '',
     }
 
-    // componentDidMount = () => {
-    //     const { songDetail } = this.props
-    //     const id = songDetail.id
-    //     if (id) {
-    //         getSongUrl(id)
-    //             .then(res => {
-    //                 this.setState({
-    //                     songUrl: res
-    //                 })
-    //             })
-    //     }
-    // }
     componentDidUpdate = (prevProps, prevState) => {
         const { playMode } = this.state
         const { songDetail, onAudioEnd } = this.props
@@ -52,11 +40,12 @@ export default class ControlPanel extends PureComponent {
             this.setState({ isPlaying: false })
             getSongUrl(id)
                 .then(async res => {
+                    const isPlaying = songDetail.autoPlay === true
                     this.setState({
-                        isPlaying: true,
+                        isPlaying,
                         songUrl: res,
                     })
-                    return await checkSongCanPlay(id)
+                    return (await checkSongCanPlay(id)) && isPlaying
                 })
                 .then(res => {
                     if (res) {

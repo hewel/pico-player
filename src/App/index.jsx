@@ -5,6 +5,7 @@ import blue from '@material-ui/core/colors/blue'
 
 import PlayList from '../Components/PlayList'
 import ControlPanel from '../Components/ControlPanel'
+import SearchBar from '../Components/SearchBar'
 
 import { uniq, curry } from 'ramda'
 // import clsx from 'clsx'
@@ -41,16 +42,19 @@ export default class App extends Component {
         shouldPlayListShow: false,
     }
     componentDidMount = async () => {
-        const songDetail = await localforage.getItem('songDetail')
+        const { index, detail } = await localforage.getItem('songDetail')
         this.setState({
             songIdList: await getPlaylist(109323387),
-            nowPlayingSongIndex: songDetail.index,
-            nowPlayingSong: songDetail.detail,
+            nowPlayingSongIndex: index,
+            nowPlayingSong: { autoPlay: false, ...detail },
         })
     }
 
     handlePlayListSelect = (index, detail) => {
-        this.setState({ nowPlayingSongIndex: index, nowPlayingSong: detail })
+        this.setState({
+            nowPlayingSongIndex: index,
+            nowPlayingSong: { autoPlay: true, ...detail },
+        })
         localforage.setItem('songDetail', { index, detail })
     }
     handleSongSkip = (playMode, opposite) => {
@@ -90,6 +94,7 @@ export default class App extends Component {
         return (
             <div id="app" className={initStyle}>
                 <MuiThemeProvider theme={theme}>
+                    <SearchBar />
                     <PlayList
                         idList={uniq(songIdList)}
                         songIndex={nowPlayingSongIndex}

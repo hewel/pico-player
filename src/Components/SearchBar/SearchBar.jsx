@@ -3,12 +3,15 @@ import PropTypes from 'prop-types'
 
 import TextField from '@material-ui/core/TextField'
 import Paper from '@material-ui/core/Paper'
-import MenuItem from '@material-ui/core/MenuItem'
+import ListItem from '@material-ui/core/ListItem'
 import Autosuggest from 'react-autosuggest'
+
+import { css } from '@emotion/core'
 
 import { isEmpty, pipe, map, toPairs, pick, prop } from 'ramda'
 
 import fetch from 'utils/fetch'
+import theme from './autosuggest.sass'
 
 function SearchBar(props) {
     const [suggestions, setSuggestions] = useState([])
@@ -37,12 +40,12 @@ function SearchBar(props) {
         const artists =
             prop('artists', suggestion) || prop('artist', suggestion)
         const inner = artists
-            ? `${suggestion.name}-${joinArtistNames(artists)}`
+            ? `${suggestion.name} - ${joinArtistNames(artists) || ''}`
             : suggestion.name
         return (
-            <MenuItem component="div" selected={isHighlighted}>
+            <ListItem component="div" selected={isHighlighted} dense button>
                 {inner}
-            </MenuItem>
+            </ListItem>
         )
     }
     const renderSectionTitle = section => {
@@ -54,22 +57,45 @@ function SearchBar(props) {
         }
         return <span>{keyTable[section.title]}</span>
     }
-    const renderInputComponent = inputProps => (
-        <TextField InputProps={inputProps} />
+    const renderInputComponent = inputProps => {
+        const { inputRef = () => {}, ref, ...props } = inputProps
+        const InputProps = {
+            inputRef: node => {
+                ref(node)
+                inputRef(node)
+            },
+        }
+        return (
+            <TextField
+                InputProps={InputProps}
+                {...props}
+                css={css`
+                    width: 736px;
+                `}
+            />
+        )
+    }
+    // eslint-disable-next-line react/prop-types
+    const renderSuggestionsContainer = ({ containerProps, children }) => (
+        <Paper square {...containerProps}>
+            {children}
+        </Paper>
     )
 
     return (
         <Autosuggest
-            multiSection={true}
+            multiSection
             suggestions={suggestions}
             getSectionSuggestions={getSectionSuggestions}
             getSuggestionValue={getSuggestionValue}
             onSuggestionsFetchRequested={handleSuggestionsFetchRequested}
             onSuggestionsClearRequested={handleSuggestionsClearRequested}
-            inputProps={inputProps}
             renderSuggestion={renderSuggestion}
             renderSectionTitle={renderSectionTitle}
             renderInputComponent={renderInputComponent}
+            renderSuggestionsContainer={renderSuggestionsContainer}
+            inputProps={inputProps}
+            theme={theme}
         />
     )
 }
@@ -111,9 +137,11 @@ async function fetchSuggestion(keywords) {
     }
 }
 function joinArtistNames(artists = []) {
-    if (artists.length === 1) {
+    const length = artists.length
+    if (length === 1) {
         return artists[0].name
     }
-    const artistNames = artists.map(artist => artist.name)
-    return artistNames.join(' & ')
+    return length
+        ? artists.map(artist => artist.name).join(' & ')
+        : artists.name
 }
