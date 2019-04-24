@@ -3,7 +3,6 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 import Paper from '@material-ui/core/Paper'
-// import VirtualizedTable from './VirtualizedTable'
 import Table from './Table'
 
 import { css, keyframes } from '@emotion/core'

@@ -8,6 +8,8 @@
     "transform-node-env-inline",
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-transform-runtime",
-    "ramda"
+    ["ramda", {
+      "useES": true
+    }]
   ]
 }
