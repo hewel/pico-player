@@ -2,10 +2,13 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 import TableCell from './TableCell'
-import Tooltip from '@material-ui/core/Tooltip'
+import Tooltip from 'Components/Tooltip'
+// import Tooltip from '@material-ui/core/Tooltip'
 
 import { css } from '@emotion/core'
 import clsx from 'clsx'
+
+import style from './style.sass'
 
 export default class TableRow extends PureComponent {
     static propTypes = {
@@ -17,16 +20,9 @@ export default class TableRow extends PureComponent {
         const { className, cellList, height, ...props } = this.props
         return (
             <div
-                className={clsx(className, 'table-row')}
+                className={clsx(className, style.tableRow)}
                 css={css`
-                    display: flex;
-                    cursor: pointer;
                     height: ${height}px;
-                    align-items: center;
-                    transition: background-color 0.1s ease-in-out;
-                    &:hover {
-                        background-color: #e0e0e0;
-                    }
                 `}
                 {...props}
             >

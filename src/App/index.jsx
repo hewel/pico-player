@@ -6,6 +6,7 @@ import blue from '@material-ui/core/colors/blue'
 import PlayList from '../Components/PlayList'
 import ControlPanel from '../Components/ControlPanel'
 import SearchBar from '../Components/SearchBar'
+import SearchPage from '../Components/SearchPage'
 
 import { uniq, curry } from 'ramda'
 // import clsx from 'clsx'
@@ -95,6 +96,7 @@ export default class App extends Component {
             <div id="app" className={initStyle}>
                 <MuiThemeProvider theme={theme}>
                     <SearchBar />
+                    <SearchPage keywords="feelings" />
                     <PlayList
                         idList={uniq(songIdList)}
                         songIndex={nowPlayingSongIndex}

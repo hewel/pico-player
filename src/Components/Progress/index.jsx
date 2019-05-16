@@ -5,12 +5,10 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 import Chip from '@material-ui/core/Chip'
 import { withStyles } from '@material-ui/core/styles'
 
-import { Global } from '@emotion/core'
-
 import clsx from 'clsx'
 
 import clamp from 'utils/clamp'
-import formatAudioTime from 'utils/format'
+import { formatAudioTime } from 'utils/format'
 
 import styles from './style.sass'
 

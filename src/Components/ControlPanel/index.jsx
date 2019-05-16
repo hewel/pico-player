@@ -8,7 +8,6 @@ import Slider from '@material-ui/lab/Slider'
 import Snackbar from '@material-ui/core/Snackbar'
 
 import clsx from 'clsx'
-import { empty } from 'ramda'
 
 import Album from '../Album'
 import Icon from '../Icon'

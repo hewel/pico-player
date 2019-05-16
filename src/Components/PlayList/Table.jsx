@@ -10,6 +10,8 @@ import { css } from '@emotion/core'
 import { equals } from 'ramda'
 import clsx from 'clsx'
 
+import style from './style.sass'
+
 export default class Table extends PureComponent {
     static propTypes = {
         columns: PropTypes.arrayOf(
@@ -83,9 +85,6 @@ export default class Table extends PureComponent {
             const cellList = columnList ? columnList[index] : []
             const backgroundColor = this.getBackgroundColor(index) || ''
             const cssString = css`
-                position: absolute;
-                left: 0;
-                width: 100%;
                 background-color: ${backgroundColor};
             `
             return (
@@ -105,7 +104,7 @@ export default class Table extends PureComponent {
         const { className, columns, dataList, ...props } = this.props
         const { columnList } = this.state
 
-        const classNames = clsx(className, 'table')
+        const classNames = clsx(className, style.tableScrollbar)
 
         const itemCount = dataList.length
         const headHeight = 48
@@ -126,22 +125,6 @@ export default class Table extends PureComponent {
                             height={height - headHeight}
                             width={width}
                             itemSize={32}
-                            css={css`
-                                &::-webkit-scrollbar {
-                                    width: 10px;
-                                    background-color: #e0e0e0;
-                                }
-                                &::-webkit-scrollbar-thumb {
-                                    background-color: #9e9e9e;
-                                    &:hover {
-                                        background-color: #757575;
-                                    }
-                                }
-                                &::-webkit-scrollbar-thumb,
-                                &::-webkit-scrollbar-corner {
-                                    border-radius: 5px;
-                                }
-                            `}
                             {...props}
                         >
                             {this.cellRender.bind(this, columnList)}

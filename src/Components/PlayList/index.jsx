@@ -10,7 +10,8 @@ import clsx from 'clsx'
 import localforage from 'localforage'
 
 import fetch from 'utils/fetch'
-import format from 'utils/format'
+import { formatAudioTime } from 'utils/format'
+import joinArtistNames from 'utils/joinArtistNames'
 
 import styles from './style.sass'
 const ANIMATE_DURATION = 400
@@ -184,17 +185,9 @@ function getSongDetail(ids) {
                 albumName: al.name,
                 albumPic: al.picUrl,
                 artist: joinArtistNames(artists),
-                duration: format(dt / 1000),
+                duration: formatAudioTime(dt / 1000),
                 publishTime,
             }
         })
     })
-}
-
-function joinArtistNames(artists = []) {
-    if (artists.length === 1) {
-        return artists[0].name
-    }
-    const artistNames = artists.map(artist => artist.name)
-    return artistNames.join(' & ')
 }

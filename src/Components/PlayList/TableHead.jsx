@@ -7,6 +7,8 @@ import blue from '@material-ui/core/colors/blue'
 import { css } from '@emotion/core'
 import clsx from 'clsx'
 
+import style from './style.sass'
+
 export default class TableHead extends PureComponent {
     static propTypes = {
         headList: PropTypes.array,
@@ -18,15 +20,11 @@ export default class TableHead extends PureComponent {
         const { headList, headHeight, width, className, ...props } = this.props
         return (
             <div
-                className={clsx(className, 'table-head')}
+                className={clsx(className, style.tableHead)}
                 css={css`
-                    display: flex;
                     width: ${width}px;
                     height: ${headHeight}px;
                     background-color: ${blue[500]};
-                    color: #fafafa;
-                    padding-right: 10px;
-                    align-items: center;
                 `}
                 {...props}
             >

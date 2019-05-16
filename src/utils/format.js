@@ -12,9 +12,9 @@ const formatAudioTime = curry((formatUnits, time) => {
         formatUnits(Math.floor(time % 60)),
     ]
     return time < 3600 ? `${minute}:${second}` : `${hour}:${minute}:${second}`
-})
+})(formatUnits)
 
 function formatUnits(num) {
     return num < 10 ? `0${num}` : `${num}`
 }
-export default formatAudioTime(formatUnits)
+export { formatAudioTime, formatUnits }

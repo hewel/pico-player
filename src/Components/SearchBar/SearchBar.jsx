@@ -11,6 +11,7 @@ import { css } from '@emotion/core'
 import { isEmpty, pipe, map, toPairs, pick, prop } from 'ramda'
 
 import fetch from 'utils/fetch'
+import joinArtistNames from 'utils/joinArtistNames'
 import theme from './autosuggest.sass'
 
 function SearchBar(props) {
@@ -55,7 +56,7 @@ function SearchBar(props) {
             albums: '专辑',
             playlists: '歌单',
         }
-        return <span>{keyTable[section.title]}</span>
+        return <ListItem component="div">{keyTable[section.title]}</ListItem>
     }
     const renderInputComponent = inputProps => {
         const { inputRef = () => {}, ref, ...props } = inputProps
@@ -96,6 +97,7 @@ function SearchBar(props) {
             renderSuggestionsContainer={renderSuggestionsContainer}
             inputProps={inputProps}
             theme={theme}
+            // alwaysRenderSuggestions
         />
     )
 }
@@ -135,13 +137,4 @@ async function fetchSuggestion(keywords) {
             map(toObject)
         )(result)
     }
-}
-function joinArtistNames(artists = []) {
-    const length = artists.length
-    if (length === 1) {
-        return artists[0].name
-    }
-    return length
-        ? artists.map(artist => artist.name).join(' & ')
-        : artists.name
 }

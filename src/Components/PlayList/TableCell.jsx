@@ -6,6 +6,8 @@ import { withStyles } from '@material-ui/core/styles'
 import { css } from '@emotion/core'
 import clsx from 'clsx'
 
+import style from './style.sass'
+
 const styles = theme => ({
     root: {
         borderBottom: 'none',
@@ -26,18 +28,9 @@ const ReTableCell = ({
 }) => {
     return (
         <TableCell
-            className={clsx(className, 'table-cell')}
+            className={clsx(className, style.tableCell)}
             component="div"
             variant={variant}
-            css={css`
-                display: flex;
-                align-items: center;
-                flex: 1;
-                /* height: ${rowHeight}px; */
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-            `}
             {...other}
         >
             {children}
